@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>networks &mdash; Spintronic Neural Network  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Spintronic Neural Network
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">src</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">About:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../readme_link.html">RF spintronic neural networks</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Spintronic Neural Network</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Module code</a></li>
+      <li class="breadcrumb-item active">networks</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for networks</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span>
+
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">Tensor</span>
+<span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
+<span class="kn">import</span> <span class="nn">torch.nn.functional</span> <span class="k">as</span> <span class="nn">F</span>
+<span class="kn">from</span> <span class="nn">torch.nn.parameter</span> <span class="kn">import</span> <span class="n">Parameter</span>
+
+<span class="kn">from</span> <span class="nn">freq_distributions</span> <span class="kn">import</span> <span class="n">freq_distribution</span>
+
+
+<div class="viewcode-block" id="instanciate_model"><a class="viewcode-back" href="../networks.html#networks.instanciate_model">[docs]</a><span class="k">def</span> <span class="nf">instanciate_model</span><span class="p">(</span><span class="n">model_name</span><span class="p">,</span> <span class="n">model_params</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">&quot;cpu&quot;</span><span class="p">)):</span>
+    <span class="k">if</span> <span class="n">model_name</span> <span class="o">==</span> <span class="s2">&quot;MLP&quot;</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">MLP</span><span class="p">(</span><span class="o">**</span><span class="n">model_params</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="n">model_name</span> <span class="o">==</span> <span class="s2">&quot;spinMLP&quot;</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">spinMLP</span><span class="p">(</span><span class="o">**</span><span class="n">model_params</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;No model found, please use either MLP or spinMLP.&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">model</span></div>
+
+
+<div class="viewcode-block" id="MLP"><a class="viewcode-back" href="../networks.html#networks.MLP">[docs]</a><span class="k">class</span> <span class="nc">MLP</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Multilayered perceptron</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        network_size (tuple):</span>
+<span class="sd">            Tuple containing the number of input features, the size of each hidden layers and the</span>
+<span class="sd">            number of output features.</span>
+<span class="sd">    Attributes:</span>
+<span class="sd">        in_features (int): Number of input features.</span>
+<span class="sd">        out_features (int): Number of output features.</span>
+<span class="sd">        nb_layers (int): Number of layers.</span>
+<span class="sd">        nb_hidden_layers (int): Number of hidden layers.</span>
+<span class="sd">        layers (ModuleList): List of nn.Linear modules.</span>
+<span class="sd">        activations (ModuleList): List of nn.ReLU modules.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">network_size</span><span class="p">,</span> <span class="n">bias</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">MLP</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;MLP&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">network_size</span> <span class="o">=</span> <span class="n">network_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">in_features</span> <span class="o">=</span> <span class="n">network_size</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">out_features</span> <span class="o">=</span> <span class="n">network_size</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nb_layers</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">network_size</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nb_hidden_layers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nb_layers</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layers</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">in_f</span><span class="p">,</span> <span class="n">out_f</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="n">bias</span><span class="p">)</span> <span class="k">for</span> <span class="n">in_f</span><span class="p">,</span> <span class="n">out_f</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">network_size</span><span class="p">,</span> <span class="n">network_size</span><span class="p">[</span><span class="mi">1</span><span class="p">:])])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">activations</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">([</span><span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">()</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nb_hidden_layers</span><span class="p">)]</span> <span class="o">+</span> <span class="p">[</span><span class="n">nn</span><span class="o">.</span><span class="n">Identity</span><span class="p">()])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">outputs</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nb_layers</span><span class="p">)]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">outputs_act</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nb_layers</span><span class="p">)]</span>
+
+<div class="viewcode-block" id="MLP.reset_parameters"><a class="viewcode-back" href="../networks.html#networks.MLP.reset_parameters">[docs]</a>    <span class="k">def</span> <span class="nf">reset_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">:</span>
+            <span class="n">layer</span><span class="o">.</span><span class="n">reset_parameters</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="MLP.forward"><a class="viewcode-back" href="../networks.html#networks.MLP.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_powers</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">input_powers</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">in_features</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">layer</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">):</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">layer</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">outputs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">activations</span><span class="p">[</span><span class="n">i</span><span class="p">](</span><span class="n">x</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">outputs_act</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span>
+        <span class="k">return</span> <span class="n">x</span></div></div>
+
+
+<div class="viewcode-block" id="spinMLP"><a class="viewcode-back" href="../networks.html#networks.spinMLP">[docs]</a><span class="k">class</span> <span class="nc">spinMLP</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot; The physical multi-layer perceptron. We assume that the number of resonators of the hidden layers is the</span>
+<span class="sd">    same as the number of input hidden nodes (aka oscillators) for each layer. We also assume that each hidden layers</span>
+<span class="sd">    have an activation function corresponding to the formula for the output power of the spin-torque nano-oscillators</span>
+<span class="sd">    (:func:`~activation_functions.stno`). This formula requires a current as an input, meaning that we need to convert</span>
+<span class="sd">    the output voltages from the chains of resonators (with an additional voltage bias) to currents by using a</span>
+<span class="sd">    voltage-to-current ratio :math:`g_\text{m}`:</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">        I = (V^{\text{chains}} + V^{\text{layer}}) g_\text{m}</span>
+
+<span class="sd">    In our case, we consider that the voltages unit is :math:`mV` and the voltage-to-current ratio is in :math:`\mu</span>
+<span class="sd">    A/mV`. Each activation function converts the chains output voltages (previous layer) into powers. For each layers</span>
+<span class="sd">    (except the last one), the power is amplified to reach a maximum of one. In fact, we consider that the input</span>
+<span class="sd">    power (for each frequency) for each layer is preserved along each resonator chain. In reality, there is a power</span>
+<span class="sd">    loss, but we consider implicitly that this loss is compensated by some artificial amplification.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        network_size (tuple): Tuple containing the number of input frequencies for the first layer, the size of each</span>
+<span class="sd">         hidden layers and the number of output features</span>
+<span class="sd">        input_freq (Tensor): Input frequencies</span>
+<span class="sd">        resonators_params (dict): Dictionary containing all the parameters of the resonators for the class</span>
+<span class="sd">         :func:`~LayerChainsResonators`</span>
+<span class="sd">        oscillators_params (dict): Dictionary containing all the parameters of the oscillators for the class</span>
+<span class="sd">         :func:`~LayerOscillators`</span>
+<span class="sd">        freq_res_bounds ([list[list[float]]]): A list containing the minimum and maximum frequencies for each layer.</span>
+<span class="sd">         Example: [[0.020,0.120], [0.020,0.120]]</span>
+<span class="sd">        freq_res_distrib (list[str]): List of string containing the type of resonance frequency distributions we use for</span>
+<span class="sd">         each layer</span>
+<span class="sd">        add_voltage_bias (list): Additional voltage bias (used for all chains).</span>
+<span class="sd">        voltage_to_current_factors (list): Conversion factor (voltage_to_current_factors gm) (converting an input</span>
+<span class="sd">         voltage into a current)</span>
+<span class="sd">        is_with_nonidealities (bool): If True, modify the output power with :func:`~add_nonidealities`.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        out_features (int): Number of output features</span>
+<span class="sd">        nb_layers (int): Number of layers of chains of resonators</span>
+<span class="sd">        nb_hidden_layers (int): Number of hidden layers of chains of resonators.</span>
+<span class="sd">        layers: List of LayerChainsResonators instantiations</span>
+<span class="sd">        nb_input_freq (int): Number of input frequencies</span>
+<span class="sd">        input_freq (Tensor): Input frequencies</span>
+<span class="sd">        layers_voltage_biases (Tensor): Additional voltage bias (used for all chains).</span>
+<span class="sd">        voltage_to_current_factors (Tensor): Conversion factor (voltage_to_current_factors gm) (converting an input voltage into</span>
+<span class="sd">         a current)</span>
+<span class="sd">        activations (): Activation functions associated to each layer. The last activation function (output layer)</span>
+<span class="sd">        correspond to the identity.</span>
+<span class="sd">        V_to_mV: scaling voltage from V to mV</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">network_size</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">input_freq</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">,</span> <span class="n">resonators_params</span><span class="p">,</span>
+                 <span class="n">oscillators_params</span><span class="p">,</span> <span class="n">nb_input_resonators</span><span class="p">,</span> <span class="n">freq_res_bounds</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]],</span>
+                 <span class="n">freq_res_distrib</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">add_voltage_bias</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span> <span class="n">voltage_to_current_factors</span><span class="p">:</span> <span class="nb">list</span><span class="p">,</span>
+                 <span class="n">is_with_nonidealities</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">spinMLP</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;spinMLP&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">network_size</span> <span class="o">=</span> <span class="n">network_size</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">in_features</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">input_freq</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nb_layers</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">network_size</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nb_hidden_layers</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nb_layers</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">out_features</span> <span class="o">=</span> <span class="n">network_size</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">nb_input_freq</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">input_freq</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_freq</span> <span class="o">=</span> <span class="n">Parameter</span><span class="p">(</span><span class="n">input_freq</span><span class="p">,</span> <span class="n">requires_grad</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">freq_res_bounds</span> <span class="o">=</span> <span class="n">freq_res_bounds</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">V_to_mV</span> <span class="o">=</span> <span class="mf">1e3</span>  <span class="c1"># scaling voltage from V to mV</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">layers_voltage_biases</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">add_voltage_bias</span><span class="p">),</span> <span class="n">requires_grad</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">voltage_to_current_factors</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">voltage_to_current_factors</span><span class="p">),</span> <span class="n">requires_grad</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layers</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">activations</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">()</span>
+
+        <span class="n">res_chains_size</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">([</span><span class="n">nb_input_resonators</span><span class="p">]</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">network_size</span><span class="p">[</span><span class="mi">1</span><span class="p">:]))</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">nb_resonators_per_chain</span><span class="p">,</span> <span class="n">nb_chains</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">res_chains_size</span><span class="p">,</span> <span class="n">res_chains_size</span><span class="p">[</span><span class="mi">1</span><span class="p">:])):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">LayerChainsResonators</span><span class="p">(</span><span class="n">nb_resonators_per_chain</span><span class="p">,</span> <span class="n">nb_chains</span><span class="p">,</span>
+                                                     <span class="o">**</span><span class="n">resonators_params</span><span class="p">,</span>
+                                                     <span class="n">freq_res_bounds</span><span class="o">=</span><span class="n">freq_res_bounds</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                                                     <span class="n">freq_res_distrib</span><span class="o">=</span><span class="n">freq_res_distrib</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                                                     <span class="n">is_with_nonidealities</span><span class="o">=</span><span class="n">is_with_nonidealities</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">activations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">LayerOscillators</span><span class="p">(</span><span class="n">nb_chains</span><span class="p">,</span> <span class="o">**</span><span class="n">oscillators_params</span><span class="p">,</span>
+                                                     <span class="n">is_with_nonidealities</span><span class="o">=</span><span class="n">is_with_nonidealities</span><span class="p">))</span>
+
+        <span class="c1"># workaround modification frequencies of the first layer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_input_freq</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_freq</span><span class="p">)</span>
+        <span class="c1"># Workaround override the last layer with Identity (No oscillators for the last layer)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">activations</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Identity</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">voltages</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nb_layers</span><span class="p">)]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">currents</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nb_layers</span><span class="p">)]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">outputs</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nb_layers</span><span class="p">)]</span>
+
+<div class="viewcode-block" id="spinMLP.reset_parameters"><a class="viewcode-back" href="../networks.html#networks.spinMLP.reset_parameters">[docs]</a>    <span class="k">def</span> <span class="nf">reset_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">add_voltage_bias</span><span class="p">,</span> <span class="n">voltage_to_current_factors</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Reset the learning parameters of each layer and set the physical hyper-parameters&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layers_voltage_biases</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">add_voltage_bias</span> <span class="o">+</span> <span class="p">[</span><span class="mf">0.</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">voltage_to_current_factors</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">voltage_to_current_factors</span> <span class="o">+</span> <span class="p">[</span><span class="mf">1.</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">:</span>
+            <span class="n">layer</span><span class="o">.</span><span class="n">reset_parameters</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="spinMLP.forward"><a class="viewcode-back" href="../networks.html#networks.spinMLP.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_powers</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            input_powers (Tensor): The powers corresponds to the input dataset values</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Scores or logits of the spintronic network corresponding to voltages.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">input_powers</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_freq</span><span class="p">))</span>  <span class="c1"># * 1e-6</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">layer</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">):</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="p">(</span><span class="n">layer</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers_voltage_biases</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">V_to_mV</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">voltage_to_current_factors</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>  <span class="c1"># output currents</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">activations</span><span class="p">[</span><span class="n">i</span><span class="p">](</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">x</span></div></div>
+
+
+<div class="viewcode-block" id="LayerChainsResonators"><a class="viewcode-back" href="../networks.html#networks.LayerChainsResonators">[docs]</a><span class="k">class</span> <span class="nc">LayerChainsResonators</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Create a set of chains of resonators acting as a neural network layer.</span>
+
+<span class="sd">    Given an input RF current as an input of a resonator, the resonator will induce a voltage rectification given by</span>
+<span class="sd">    an expression obtained that corresponds to the analytic model of the paper. The complete expression of the</span>
+<span class="sd">    voltage rectification of the resonator :math:`k` of the chain :math:`j` submitted to the input signal :math:`i` is</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">        v_{ijk} = (-1)^k P_i G_{ijk}</span>
+
+<span class="sd">    where the factor :math:`(-1)^k` take into account the fact that the resonators inside a chain are connected</span>
+<span class="sd">    alternatively in series, :math:`P_i` is the power of the input signal :math:`i`, :math:`G` is the rectification</span>
+<span class="sd">    tensor:</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">        G_{ijk}= \frac{2\alpha f_{jk}^{\text{res}} (f_i^{\text{in}}-f_{jk}^{\text{res}})}{(\alpha  \</span>
+<span class="sd">        f_{jk}^{\text{res}})^2+(f_i^{\text{in}}-f_{jk}^{\text{res}})^2} K_{SD}</span>
+
+<span class="sd">    where :math:`f_i^{\text{in}}` is the frequency of the input signal :math:`i` and :math:`f_{jk}^{\text{res}}` is the</span>
+<span class="sd">    frequency of the resonator :math:`k` of the chain :math:`j` at resonance and :math:`\alpha` is the Gilbert damping.</span>
+
+<span class="sd">    Finally,</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">        K_{SD} = \frac{\Delta R}{R}\frac{1}{I_{\text{th}}}\frac{\tan \gamma_p}{8\sqrt{2}}\beta_s</span>
+
+<span class="sd">    where it is assumed that the TMR :math:`\frac{\Delta R}{R}\approx 1`, the shape factor :math:`\beta_s\approx 1` and</span>
+<span class="sd">    :math:`\frac{\tan \gamma_p}{8\sqrt{2}}\approx 0.088` (:math:`\gamma_p=\pi/4`).</span>
+
+
+<span class="sd">    Note:</span>
+<span class="sd">        - For convenience, we can change the connection between resonators by choosing either :math:`(-1)^{k}` or</span>
+<span class="sd">          :math:`(-1)^{k+1}`.</span>
+<span class="sd">        - For the input powers of physical MLP, it is expected that :math:`P_i\in [0,1]` where 1 corresponds to</span>
+<span class="sd">          :math:`1\, \mu W`.</span>
+<span class="sd">        - For the frequencies :math:`f_i^{\text{in}}` and :math:`f_{jk}^{\text{res}}` the order of magnitude is the</span>
+<span class="sd">          **GHz**.</span>
+<span class="sd">        - It is expected that :math:`I_{th}\approx 10\mu A`. Since the order of magnitude of both power and</span>
+<span class="sd">          current is the same (:math:`\mu W` and :math:`\mu A`) they are compensated, meaning we don&#39;t need to write the</span>
+<span class="sd">          factors of the order of magnitude.</span>
+
+<span class="sd">    .. _rectification:</span>
+
+<span class="sd">    In this model, it is normally assumed that the signal fed in the resonator has only one frequency component (need</span>
+<span class="sd">    check). But it seems (need ref) that the total voltage rectification of one resonator of an analog input signal</span>
+<span class="sd">    corresponds to the integral over the &quot;frequency domain of rectification&quot; of the analytic model [1]. While in</span>
+<span class="sd">    practice this domain have a finite length, in the model it has an infinite length. We need to keep that in mind.</span>
+<span class="sd">    Therefore, given an RF current as an input of a chain of resonators, each resonator will rectify the input</span>
+<span class="sd">    signal. In our case, the input signal is either a real analog signal, e.g. an RF signal, or an artificial signal</span>
+<span class="sd">    made of an arbitrary set of frequencies, e.g. the pixels of an image encoded into one RF current (MLP case) or</span>
+<span class="sd">    into different field lines interacting independently with each resonators of a chain (CNN case).</span>
+
+
+<span class="sd">    Since we assumed that a resonator can rectify a signal composed of several frequency components, which is the</span>
+<span class="sd">    case for an analog signal, the weight matrix is computed using</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">        W_{ji} = \sum_k(-1)^k G_{jik}</span>
+
+<span class="sd">    .. _output_voltages:</span>
+
+<span class="sd">    Finally, the output voltages of all chains are obtained through the linear transformation of the incoming signals:</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">        V = PW^T + b</span>
+
+<span class="sd">    where :math:`P` corresponds to the input powers vector, :math:`W^T` is the transpose of weight matrix and</span>
+<span class="sd">    :math:`b` is the vector containing the bias voltages vector. This transpose operation is necessary because we are</span>
+<span class="sd">    using the Pytorch class torch.nn.functional.linear.</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">        More explanation on the way to write the rectification function and the weight matrix can be found in [1].</span>
+
+
+<span class="sd">    Args:</span>
+<span class="sd">        nb_resonators_per_chain (int): Number of resonator inside one chain (chains supposed same length). It needs to</span>
+<span class="sd">         be the same as the number of input frequencies if we do not consider overlap.</span>
+<span class="sd">        nb_chains (int): Number of chains of resonators. It also corresponds to the number of outputs.</span>
+<span class="sd">        weight_scaling (float): Scaling factor of the **weight** attribute.</span>
+<span class="sd">        bias_scaling (float): Scaling factor for the **bias** attribute.</span>
+
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        weight (Tensor):</span>
+<span class="sd">            The learnable weights of the module with a shape :math:`(\text{nb_chains},</span>
+<span class="sd">            \text{nb_resonators_per_chain})` that correspond to the shift with respect to the initial resonance</span>
+<span class="sd">            frequencies of all resonators. Alternatively, it can correspond directly to the resonance frequencies of all</span>
+<span class="sd">            resonators (for that need to uncomment a line in init_initial_res_freq).</span>
+<span class="sd">        bias (Tensor):</span>
+<span class="sd">            The learnable biases of the module of shape :math:`(\text{nb_chains})`. Physically, it corresponds to</span>
+<span class="sd">            voltage biases (one per chain).</span>
+<span class="sd">            If :attr:`bias` is ``True``, the values are initialized from</span>
+<span class="sd">            :math:`\mathcal{N}(0, \sigma)` where :math:`\sigma = \frac{0.01}{\sqrt{\text{nb_chains}}}`.</span>
+<span class="sd">        initial_res_freq (Tensor): The initial resonance frequencies of a chain (same for all chains).</span>
+<span class="sd">        input_freq (Tensor): The input frequencies of the layer. By default, it corresponds to the initial</span>
+<span class="sd">         freq_distribution of resonance frequencies. It can be modified by using the set_input_freq method.</span>
+<span class="sd">        resonators_connection (Tensor):The factor that characterises the connection between the resonators of a chain. For a</span>
+<span class="sd">         head-to-tail arrangement, it corresponds to the :math:`(-1)^k` factor (see N.Leroux et al, Phys. Rev.Applied 15</span>
+<span class="sd">         ,034067 (2021)).</span>
+<span class="sd">         freq_res_min (float): The initial minimum resonance frequency of all chains (associated to the first resonator</span>
+<span class="sd">          of each chain).</span>
+<span class="sd">         freq_res_max (float): The initial maximum resonance frequency of all chains (associated to the last resonator of</span>
+<span class="sd">          each chain).</span>
+<span class="sd">         damping (float): The Gilbert damping parameter.</span>
+<span class="sd">         Ith (float): The threshold current of the MTJ. While it exists in the case of excitation of a STNO, such</span>
+<span class="sd">          threshold effect do not exist for the case of a resonator. However, it appears in the calculation of</span>
+<span class="sd">          rectification.</span>
+<span class="sd">         KSD (float): The spin torque sensitivity.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nb_resonators_per_chain</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">nb_chains</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">bias</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                 <span class="n">freq_res_bounds</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">signed_connection</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;k+1&quot;</span><span class="p">,</span> <span class="n">Ith_res</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">10.</span><span class="p">,</span> <span class="n">freq_res_distrib</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;non_linear&quot;</span><span class="p">,</span>
+                 <span class="n">weight_scaling</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-3</span><span class="p">,</span> <span class="n">bias_scaling</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-2</span><span class="p">,</span> <span class="n">damping</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.01</span><span class="p">,</span>
+                 <span class="n">is_with_nonidealities</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+                 <span class="n">freq_var_percentage</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.01</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">LayerChainsResonators</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nb_resonators_per_chain</span> <span class="o">=</span> <span class="n">nb_resonators_per_chain</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nb_chains</span> <span class="o">=</span> <span class="n">nb_chains</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">out_features</span> <span class="o">=</span> <span class="n">nb_chains</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">freq_res_min</span> <span class="o">=</span> <span class="n">freq_res_bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">freq_res_max</span> <span class="o">=</span> <span class="n">freq_res_bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">freq_res_distrib</span> <span class="o">=</span> <span class="n">freq_res_distrib</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">initial_res_freq</span> <span class="o">=</span> <span class="n">Parameter</span><span class="p">(</span><span class="n">freq_distribution</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">freq_res_distrib</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nb_resonators_per_chain</span><span class="p">,</span>
+                                                            <span class="n">minimum</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">freq_res_min</span><span class="p">,</span> <span class="n">maximum</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">freq_res_max</span><span class="p">,</span>
+                                                            <span class="n">scaling_factor</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">freq_res_min</span><span class="p">),</span> <span class="n">requires_grad</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_freq</span> <span class="o">=</span> <span class="n">Parameter</span><span class="p">(</span><span class="n">freq_distribution</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">freq_res_distrib</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nb_resonators_per_chain</span><span class="p">,</span>
+                                                      <span class="n">minimum</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">freq_res_min</span><span class="p">,</span> <span class="n">maximum</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">freq_res_max</span><span class="p">,</span>
+                                                      <span class="n">scaling_factor</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">freq_res_min</span><span class="p">),</span> <span class="n">requires_grad</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">connection</span> <span class="o">=</span> <span class="n">signed_connection</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">resonators_connection</span> <span class="o">=</span> <span class="n">Parameter</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">nb_resonators_per_chain</span><span class="p">),</span> <span class="n">requires_grad</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">init_resonators_connection</span><span class="p">()</span>
+
+        <span class="c1"># Frequency Deviations from the initial resonance frequencies (learning parameters)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">weight</span> <span class="o">=</span> <span class="n">Parameter</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">nb_chains</span><span class="p">,</span> <span class="n">nb_resonators_per_chain</span><span class="p">),</span> <span class="n">requires_grad</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">bias</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">bias</span> <span class="o">=</span> <span class="n">Parameter</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">nb_chains</span><span class="p">),</span> <span class="n">requires_grad</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">register_parameter</span><span class="p">(</span><span class="s1">&#39;bias&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">weight_scaling</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">nb_resonators_per_chain</span><span class="p">)</span> <span class="o">*</span> <span class="n">weight_scaling</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bias_scaling</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">nb_chains</span><span class="p">)</span> <span class="o">*</span> <span class="n">bias_scaling</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">damping</span> <span class="o">=</span> <span class="n">damping</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Ith</span> <span class="o">=</span> <span class="n">Ith_res</span>  <span class="c1"># MicroAmp  #e-6 #Amp</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">KSD</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">tan</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">4</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">8</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">Ith</span>  <span class="c1"># Spin-diode sensitivity (not in SI units)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reset_parameters</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">is_with_nonidealities</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_nonidealities</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_freq</span><span class="p">,</span> <span class="n">freq_var_percentage</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_nonidealities</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">initial_res_freq</span><span class="p">,</span> <span class="n">freq_var_percentage</span><span class="p">)</span>
+
+<div class="viewcode-block" id="LayerChainsResonators.set_input_freq"><a class="viewcode-back" href="../networks.html#networks.LayerChainsResonators.set_input_freq">[docs]</a>    <span class="k">def</span> <span class="nf">set_input_freq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_freq</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_freq</span> <span class="o">=</span> <span class="n">Parameter</span><span class="p">(</span><span class="n">input_freq</span><span class="p">,</span> <span class="n">requires_grad</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LayerChainsResonators.add_nonidealities"><a class="viewcode-back" href="../networks.html#networks.LayerChainsResonators.add_nonidealities">[docs]</a>    <span class="k">def</span> <span class="nf">add_nonidealities</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parameter</span><span class="p">,</span> <span class="n">var_percentage</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Modify the input tensor t using a sample :math:`X` from a normal distribution :math:`\mathcal{N}(0,1)` scaled</span>
+<span class="sd">        by the variability percentage :math:`\varepsilon` using the formula:</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">            t^{&#39;} = t(1+X\varepsilon).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">rand_values</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn_like</span><span class="p">(</span><span class="n">parameter</span><span class="o">.</span><span class="n">data</span><span class="p">)</span> <span class="o">*</span> <span class="n">var_percentage</span>
+        <span class="n">parameter</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">parameter</span><span class="o">.</span><span class="n">data</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">rand_values</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LayerChainsResonators.reset_parameters"><a class="viewcode-back" href="../networks.html#networks.LayerChainsResonators.reset_parameters">[docs]</a>    <span class="k">def</span> <span class="nf">reset_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">nn</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">normal_</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">weight</span><span class="p">,</span> <span class="n">std</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">weight_scaling</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bias</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">normal_</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bias</span><span class="p">,</span> <span class="n">std</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">bias_scaling</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LayerChainsResonators.init_resonators_connection"><a class="viewcode-back" href="../networks.html#networks.LayerChainsResonators.init_resonators_connection">[docs]</a>    <span class="k">def</span> <span class="nf">init_resonators_connection</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">connection</span> <span class="o">==</span> <span class="s2">&quot;k&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">resonators_connection</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">(</span>
+                <span class="p">[(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nb_resonators_per_chain</span><span class="p">)])</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">connection</span> <span class="o">==</span> <span class="s2">&quot;k+1&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">resonators_connection</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">(</span>
+                <span class="p">[(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="n">k</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nb_resonators_per_chain</span><span class="p">)])</span></div>
+
+<div class="viewcode-block" id="LayerChainsResonators.rectification"><a class="viewcode-back" href="../networks.html#networks.LayerChainsResonators.rectification">[docs]</a>    <span class="k">def</span> <span class="nf">rectification</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">input_freq</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_freq</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_freq</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">res_freq</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">initial_res_freq</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">weight</span>
+        <span class="n">res_freq</span> <span class="o">=</span> <span class="n">res_freq</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nb_chains</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nb_resonators_per_chain</span><span class="p">)</span>
+        <span class="n">W</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">damping</span> <span class="o">*</span> <span class="n">res_freq</span> <span class="o">*</span> <span class="p">(</span><span class="n">input_freq</span> <span class="o">-</span> <span class="n">res_freq</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span>
+                <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">damping</span> <span class="o">*</span> <span class="n">res_freq</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="n">input_freq</span> <span class="o">-</span> <span class="n">res_freq</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">KSD</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">resonators_connection</span>
+        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">W</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LayerChainsResonators.forward"><a class="viewcode-back" href="../networks.html#networks.LayerChainsResonators.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_powers</span><span class="p">:</span> <span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tensor</span><span class="p">:</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Performs a &quot;linear&quot; transformation on the input powers.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            input_powers:</span>
+<span class="sd">                The input powers associated to the inputs signals. 1 unit power = :math:`1\, \mu W`.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The product between the input powers and the rectification matrix whose elements {Wij} corresponds to the</span>
+<span class="sd">            rectification function of the chain j submitted to an input signal i. Hence, it corresponds to a</span>
+<span class="sd">            &quot;vector&quot; containing the :ref:`rectification voltages &lt;output_voltages&gt;` of all chains.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">F</span><span class="o">.</span><span class="n">linear</span><span class="p">(</span><span class="n">input_powers</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">rectification</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">bias</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LayerChainsResonators.extra_repr"><a class="viewcode-back" href="../networks.html#networks.LayerChainsResonators.extra_repr">[docs]</a>    <span class="k">def</span> <span class="nf">extra_repr</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;nb_resonators_per_chain=</span><span class="si">{}</span><span class="s1">, nb_chains=</span><span class="si">{}</span><span class="s1">, bias=</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">nb_resonators_per_chain</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nb_chains</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">bias</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+        <span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="LayerOscillators"><a class="viewcode-back" href="../networks.html#networks.LayerOscillators">[docs]</a><span class="k">class</span> <span class="nc">LayerOscillators</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Create a set of spin-transfer nano-oscillators (STNOs) corresponding to activation functions.</span>
+<span class="sd">    The expression of the normalized output power of one STNO is:</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">        p = |c|^2 = \frac{\xi - 1}{\xi + Q} \quad (\text{if } \xi &gt; 1, 0 \, \text{otherwise})</span>
+
+<span class="sd">    where :math:`c` is the normalized amplitude of the stationary precession, :math:`\xi=I_{</span>
+<span class="sd">    \text{DC}}/I_{\text{th}}` and :math:`Q` is the non-linear damping coefficient. In order to have a non-null output</span>
+<span class="sd">    power, the input DC current :math:`I_{\text{DC}}` must be superior to a threshold current :math:`I_{\text{th}}`.</span>
+<span class="sd">    The scaled output power is given by</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">        P = A \, p(I_{DC}) \,(\frac{\Delta R}{R}\beta )^2 \, R I_{DC}^2</span>
+
+<span class="sd">    where :math:`A` is a scaling factor, :math:`\frac{\Delta R}{R}` is the TMR, :math:`\beta` is the shape</span>
+<span class="sd">    factor and :math:`R` is the resistance of all the oscillators. We assume that the TMR is 100%</span>
+<span class="sd">    (:math:`\frac{\Delta R}{R}=1)` and the shape factor equal to 1 (:math:`\beta \approx 1`) which reduces the</span>
+<span class="sd">    expression to</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">        P = A \, p(I_{DC}) \, R\, I_{DC}^2</span>
+
+<span class="sd">    Since the output powers cannot be negative, we clamped all the values of current inferior to the threshold current</span>
+<span class="sd">    (including negative values) to :math:`I_{\text{th}}`. This gives :math:`\xi = 1` leading to a normalized power of</span>
+<span class="sd">    0, thus an output power of 0. In addition to this, the currents are clamped at :math:`4 I_{th}` to mimic the</span>
+<span class="sd">    experimental prevention of the destruction of the oscillators.</span>
+
+<span class="sd">    The variability of the output powers is implemented as a modification of the scaling factor using the method</span>
+<span class="sd">    :func:`~add_nonidealities`.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        nb_chains (int): Number of input chains of resonators</span>
+<span class="sd">        Q (float): Non-linear damping coefficient. The value has to be positive (default: 2).</span>
+<span class="sd">        Ith_osc (float): Threshold current (current necessary to get auto-oscillations).</span>
+<span class="sd">        Iclamp (float): Current value above which the current is clamped.</span>
+<span class="sd">        R_osc (float): Oscillators resistance.</span>
+<span class="sd">        scaling (float): Scaling factor used to prevent vanishing gradient. This is due to the fact that the inputs</span>
+<span class="sd">         values decrease while propagating in the network. It corresponds to a change of units from watt to microwatt</span>
+<span class="sd">         which is the unit expected for the input of a LayerChainsResonators instance.</span>
+<span class="sd">        amp_factor (float): It corresponds to the action of a power amplifier that adjust the output power of the</span>
+<span class="sd">         oscillators.</span>
+<span class="sd">        is_with_nonidealities (bool): If True, modify the output power with :func:`~add_nonidealities`.</span>
+<span class="sd">        power_var_percentage (float): Variability amplitude corresponding to the standard deviation of the normal</span>
+<span class="sd">         distribution from which the samples are extracted (see :func:`~add_nonidealities`)</span>
+<span class="sd">    Note:</span>
+<span class="sd">        It is expected that :math:`Q=2`, :math:`I_{th}\, \approx 10\mu A` and :math:`R_{osc}\approx 1k\Omega`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nb_chains</span><span class="p">,</span> <span class="n">Q</span><span class="o">=</span><span class="mf">2.</span><span class="p">,</span> <span class="n">Ith_osc</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">Iclamp</span><span class="o">=</span><span class="mi">40</span><span class="p">,</span> <span class="n">R_osc</span><span class="o">=</span><span class="mf">1e3</span><span class="p">,</span> <span class="n">scaling</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">,</span> <span class="n">amp_factor</span><span class="o">=</span><span class="mf">1.25</span><span class="p">,</span>
+                 <span class="n">is_with_nonidealities</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">power_var_percentage</span><span class="o">=</span><span class="mf">0.01</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">LayerOscillators</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Q</span> <span class="o">=</span> <span class="n">Q</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Ith_osc</span> <span class="o">=</span> <span class="n">Ith_osc</span>  <span class="c1"># microA</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Iclamp</span> <span class="o">=</span> <span class="n">Iclamp</span>  <span class="c1"># microA</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">R_osc</span> <span class="o">=</span> <span class="n">R_osc</span>  <span class="c1"># Ohm</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_with_nonidealities</span> <span class="o">=</span> <span class="n">is_with_nonidealities</span>
+
+        <span class="k">if</span> <span class="n">is_with_nonidealities</span><span class="p">:</span>
+            <span class="n">amp</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">nb_chains</span><span class="p">)</span>  <span class="c1"># This contains percentages of the resulting power found later on.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_nonidealities</span><span class="p">(</span><span class="n">amp</span><span class="p">,</span> <span class="n">power_var_percentage</span><span class="p">)</span>
+            <span class="n">amp</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">clamp</span><span class="p">(</span><span class="n">amp</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mf">0.</span><span class="p">)</span> <span class="o">*</span> <span class="n">amp_factor</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">amp</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">amp_factor</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">factor</span> <span class="o">=</span> <span class="n">Parameter</span><span class="p">(</span><span class="n">scaling</span> <span class="o">*</span> <span class="n">amp</span><span class="p">,</span> <span class="n">requires_grad</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="c1"># self.visualize()</span>
+
+<div class="viewcode-block" id="LayerOscillators.add_nonidealities"><a class="viewcode-back" href="../networks.html#networks.LayerOscillators.add_nonidealities">[docs]</a>    <span class="k">def</span> <span class="nf">add_nonidealities</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parameter</span><span class="p">,</span> <span class="n">var_percentage</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Modify the input tensor t using a sample :math:`X` from a normal distribution :math:`\mathcal{N}(0,1)`</span>
+<span class="sd">        scaled by the variability percentage :math:`\varepsilon` using the formula:</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">            t^{&#39;} = t(1+X\varepsilon).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">rand_values</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn_like</span><span class="p">(</span><span class="n">parameter</span><span class="o">.</span><span class="n">data</span><span class="p">)</span> <span class="o">*</span> <span class="n">var_percentage</span>
+        <span class="n">parameter</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">parameter</span><span class="o">.</span><span class="n">data</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">rand_values</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LayerOscillators.normalized_stno_power"><a class="viewcode-back" href="../networks.html#networks.LayerOscillators.normalized_stno_power">[docs]</a>    <span class="k">def</span> <span class="nf">normalized_stno_power</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_currents</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Return the normalized output powers of a set of STNOs</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">            p = \frac{\xi - 1}{\xi + Q} \quad (\text{if } \xi &gt; 1, 0 \, \text{otherwise})</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">xi</span> <span class="o">=</span> <span class="n">input_currents</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">Ith_osc</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">xi</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">xi</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">Q</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="LayerOscillators.forward"><a class="viewcode-back" href="../networks.html#networks.LayerOscillators.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_currents</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Return the output powers of a set of STNOs.</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">            P = A \, p(I_{DC}) \, R\, I_{DC}^2</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">input_currents</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">clamp</span><span class="p">(</span><span class="n">input_currents</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">Iclamp</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">Ith_osc</span><span class="p">)</span>
+        <span class="n">output_power</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">normalized_stno_power</span><span class="p">(</span><span class="n">input_currents</span><span class="p">)</span> <span class="o">*</span> <span class="n">input_currents</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">R_osc</span>
+        <span class="k">return</span> <span class="n">output_power</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">factor</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Arnaud De Riz.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

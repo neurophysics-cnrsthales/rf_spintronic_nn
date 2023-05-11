@@ -1,0 +1,58 @@
+UID: 00000000-000000
+torch_seed: 0
+
+dataset_params:
+  name: 'drones_signals' # Either 'drones_signals' or 'MNIST'
+  input_freq_min: 0.02
+  input_freq_max: 0.12
+
+data_loaders_params:
+  train_batch_size: 256
+  test_batch_size: 500
+  shuffle: True
+
+lr: 6.6093213492233285e-06
+model: "spinMLP" # Model can be either "MLP" or "spinMLP"
+hidden_size: [128]
+
+model_evaluation_params:
+  epochs: 100
+  nb_repeats: 100
+
+model_selection_params:
+  epochs: 100
+  method: 'repeated_stratified_kfold'
+  nb_repeats: 1
+  nb_splits: 5
+  nb_trials: 100
+  random_state: 0
+  trial_objective: accuracy
+
+physical_model_params:
+  add_voltage_bias:  [0.011084586710145186, 0.]
+  freq_res_bounds: [[0.020,0.120],[0.020,0.120]]
+  freq_res_distrib: ["linear","non_linear"]
+  nb_input_resonators: 256
+  voltage_to_current_factors: [3.388370758630916, 1.]
+
+  resonators_params:
+    bias_scaling: 0.01
+    damping: 0.01
+    freq_var_percentage: 0.
+    Ith_res: 10
+    signed_connection: "k+1"
+    weight_scaling: 0.001
+
+  oscillators_params:
+    amp_factor: 1.25
+    Ith_osc: 10
+    Iclamp: 40
+    power_var_percentage: 0.
+    Q: 2.
+    R_osc: 1.e+3
+    scaling: 1.e-06
+
+
+
+
+

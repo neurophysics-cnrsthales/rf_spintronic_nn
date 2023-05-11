@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>utils &mdash; Spintronic Neural Network  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Spintronic Neural Network
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">src</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">About:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../readme_link.html">RF spintronic neural networks</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Spintronic Neural Network</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Module code</a></li>
+      <li class="breadcrumb-item active">utils</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for utils</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">csv</span>
+<span class="kn">import</span> <span class="nn">json</span>
+
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">Tensor</span>
+<span class="kn">from</span> <span class="nn">torch.utils.data</span> <span class="kn">import</span> <span class="n">Dataset</span>
+<span class="kn">import</span> <span class="nn">yaml</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="kn">import</span> <span class="n">coo_matrix</span>
+
+
+<div class="viewcode-block" id="load_config"><a class="viewcode-back" href="../utils.html#utils.load_config">[docs]</a><span class="k">def</span> <span class="nf">load_config</span><span class="p">(</span><span class="n">config_path</span><span class="p">):</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">config_path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">config</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+    <span class="c1"># check_config(config)</span>
+    <span class="k">return</span> <span class="n">config</span></div>
+
+
+<div class="viewcode-block" id="check_config"><a class="viewcode-back" href="../utils.html#utils.check_config">[docs]</a><span class="k">def</span> <span class="nf">check_config</span><span class="p">(</span><span class="n">conf</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+    <span class="n">available_models</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;MLP&quot;</span><span class="p">,</span> <span class="s2">&quot;spinMLP&quot;</span><span class="p">]</span>
+    <span class="n">available_resampling_types</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;default&quot;</span><span class="p">,</span> <span class="s2">&quot;custom&quot;</span><span class="p">]</span>
+    <span class="n">available_resampling_methods</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;2ways_holdout&quot;</span><span class="p">,</span> <span class="s2">&quot;3ways_holdout&quot;</span><span class="p">,</span> <span class="s2">&quot;stratified_kfold&quot;</span><span class="p">]</span>
+    <span class="n">available_trial_objectives</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;accuracy&quot;</span><span class="p">,</span> <span class="s2">&quot;loss&quot;</span><span class="p">,</span> <span class="s2">&quot;error&quot;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">conf</span><span class="p">[</span><span class="s2">&quot;resampling_params&quot;</span><span class="p">][</span><span class="s2">&quot;resampling_type&quot;</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">available_resampling_types</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Expected the resampling type </span><span class="si">{</span><span class="n">conf</span><span class="p">[</span><span class="s2">&quot;resampling_params&quot;</span><span class="p">][</span><span class="s2">&quot;resampling_type&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1"> to be in the &#39;</span>
+                         <span class="sa">f</span><span class="s1">&#39;list </span><span class="si">{</span><span class="n">available_resampling_types</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">conf</span><span class="p">[</span><span class="s2">&quot;model&quot;</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">available_models</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Expected the model name </span><span class="si">{</span><span class="n">conf</span><span class="p">[</span><span class="s2">&quot;model&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1"> to be in the list </span><span class="si">{</span><span class="n">available_models</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">conf</span><span class="p">[</span><span class="s2">&quot;model_evaluation_params&quot;</span><span class="p">][</span><span class="s2">&quot;method&quot;</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">available_resampling_methods</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s1">&#39;Expected the resampling method </span><span class="si">{</span><span class="n">conf</span><span class="p">[</span><span class="s2">&quot;model_evaluation_params&quot;</span><span class="p">][</span><span class="s2">&quot;method&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1"> to be in the list &#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">available_resampling_methods</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">conf</span><span class="p">[</span><span class="s2">&quot;model_selection_params&quot;</span><span class="p">][</span><span class="s2">&quot;method&quot;</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">available_resampling_methods</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Expected the resampling method </span><span class="si">{</span><span class="n">conf</span><span class="p">[</span><span class="s2">&quot;model_selection_params&quot;</span><span class="p">][</span><span class="s2">&quot;method&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1"> to be in the list &#39;</span>
+                         <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">available_resampling_methods</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">conf</span><span class="p">[</span><span class="s2">&quot;model_selection_params&quot;</span><span class="p">][</span><span class="s2">&quot;trial_objective&quot;</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">available_trial_objectives</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Expected the trial objective </span><span class="si">{</span><span class="n">conf</span><span class="p">[</span><span class="s2">&quot;model_selection_params&quot;</span><span class="p">][</span><span class="s2">&quot;trial_objective&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1"> to be in &#39;</span>
+                         <span class="sa">f</span><span class="s1">&#39;the list </span><span class="si">{</span><span class="n">available_trial_objectives</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
+
+    <span class="c1"># if len(conf[&quot;hidden_size&quot;]) + 1 != len(conf[&quot;physical_model_params&quot;][&quot;freq_res_bounds&quot;]): raise ValueError(</span>
+    <span class="c1"># f&#39;Expected the freq_res_bounds size to be equal to the hidden size + 1. It is cleaner for the &#39; f&#39;simulation</span>
+    <span class="c1"># register entry.&#39;)</span>
+    <span class="c1">#</span>
+    <span class="c1"># if len(conf[&quot;hidden_size&quot;]) + 1 != len(conf[&quot;physical_model_params&quot;][&quot;freq_res_distrib&quot;]): raise</span>
+    <span class="c1"># ValueError(f&#39;Expected the freq_res_distrib size to be equal to the hidden size + 1. It is cleaner for the&#39; f&#39;</span>
+    <span class="c1"># simulation register entry.&#39;)</span>
+
+
+<div class="viewcode-block" id="override_config"><a class="viewcode-back" href="../utils.html#utils.override_config">[docs]</a><span class="k">def</span> <span class="nf">override_config</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">torch_seed</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">config</span><span class="p">[</span><span class="s1">&#39;torch_seed&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">torch_seed</span>
+    <span class="c1"># Dataparam</span>
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">dataset_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;dataset_params&quot;</span><span class="p">][</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">dataset_name</span>
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">input_freq_min</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;dataset_params&quot;</span><span class="p">][</span><span class="s2">&quot;input_freq_min&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">input_freq_min</span>
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">input_freq_max</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;dataset_params&quot;</span><span class="p">][</span><span class="s2">&quot;input_freq_max&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">input_freq_max</span>
+    <span class="c1"># if args.dataset_filename is not None:</span>
+    <span class="c1">#     config[&quot;dataset_params&quot;][&quot;is_normalized&quot;] = args.is_normalized</span>
+
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">train_batch_size</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;data_loaders_params&quot;</span><span class="p">][</span><span class="s2">&quot;train_batch_size&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">train_batch_size</span>
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">test_batch_size</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;data_loaders_params&quot;</span><span class="p">][</span><span class="s2">&quot;test_batch_size&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">test_batch_size</span>
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">shuffle</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;data_loaders_params&quot;</span><span class="p">][</span><span class="s2">&quot;shuffle&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">shuffle</span>
+
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">lr</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;lr&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">lr</span>
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">model</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;model&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">model</span>
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">hidden_size</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;hidden_size&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">hidden_size</span>
+
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">eval_epochs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;model_evaluation_params&quot;</span><span class="p">][</span><span class="s2">&quot;epochs&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">eval_epochs</span>
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">eval_nb_repeats</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;model_evaluation_params&quot;</span><span class="p">][</span><span class="s2">&quot;nb_repeats&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">eval_nb_repeats</span>
+
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">select_epochs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;model_selection_params&quot;</span><span class="p">][</span><span class="s2">&quot;epochs&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">select_epochs</span>
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">select_method</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;model_selection_params&quot;</span><span class="p">][</span><span class="s2">&quot;method&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">select_method</span>
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">select_nb_repeats</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;model_selection_params&quot;</span><span class="p">][</span><span class="s2">&quot;nb_repeats&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">select_nb_repeats</span>
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">select_nb_splits</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;model_selection_params&quot;</span><span class="p">][</span><span class="s2">&quot;nb_splits&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">select_nb_splits</span>
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">select_nb_trials</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;model_selection_params&quot;</span><span class="p">][</span><span class="s2">&quot;nb_trials&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">select_nb_trials</span>
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">select_random_state</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;model_selection_params&quot;</span><span class="p">][</span><span class="s2">&quot;random_state&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">select_random_state</span>
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">select_trial_objective</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;model_selection_params&quot;</span><span class="p">][</span><span class="s2">&quot;trial_objective&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">select_trial_objective</span>
+
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">add_voltage_bias</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;physical_model_params&quot;</span><span class="p">][</span><span class="s2">&quot;add_voltage_bias&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">add_voltage_bias</span>
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">freq_res_bounds</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;physical_model_params&quot;</span><span class="p">][</span><span class="s2">&quot;freq_res_bounds&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">freq_res_bounds</span>
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">freq_res_distrib</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;physical_model_params&quot;</span><span class="p">][</span><span class="s2">&quot;freq_res_distrib&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">freq_res_distrib</span>
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">nb_input_resonators</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;physical_model_params&quot;</span><span class="p">][</span><span class="s2">&quot;nb_input_resonators&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">nb_input_resonators</span>
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">voltage_to_current_factors</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;physical_model_params&quot;</span><span class="p">][</span><span class="s2">&quot;voltage_to_current_factors&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">voltage_to_current_factors</span>
+
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">bias_scaling</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;physical_model_params&quot;</span><span class="p">][</span><span class="s2">&quot;resonators_params&quot;</span><span class="p">][</span><span class="s2">&quot;bias_scaling&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">bias_scaling</span>
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">damping</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;physical_model_params&quot;</span><span class="p">][</span><span class="s2">&quot;resonators_params&quot;</span><span class="p">][</span><span class="s2">&quot;bias_scaling&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">damping</span>
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">freq_var_percentage</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;physical_model_params&quot;</span><span class="p">][</span><span class="s2">&quot;resonators_params&quot;</span><span class="p">][</span><span class="s2">&quot;freq_var_percentage&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">freq_var_percentage</span>
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">Ith_res</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;physical_model_params&quot;</span><span class="p">][</span><span class="s2">&quot;resonators_params&quot;</span><span class="p">][</span><span class="s2">&quot;Ith_res&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">Ith_res</span>
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">signed_connection</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;physical_model_params&quot;</span><span class="p">][</span><span class="s2">&quot;resonators_params&quot;</span><span class="p">][</span><span class="s2">&quot;signed_connection&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">signed_connection</span>
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">weight_scaling</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;physical_model_params&quot;</span><span class="p">][</span><span class="s2">&quot;resonators_params&quot;</span><span class="p">][</span><span class="s2">&quot;weight_scaling&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">weight_scaling</span>
+
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">amp_factor</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;physical_model_params&quot;</span><span class="p">][</span><span class="s2">&quot;oscillators_params&quot;</span><span class="p">][</span><span class="s2">&quot;amp_factor&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">amp_factor</span>
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">Ith_osc</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;physical_model_params&quot;</span><span class="p">][</span><span class="s2">&quot;oscillators_params&quot;</span><span class="p">][</span><span class="s2">&quot;Ith_osc&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">Ith_osc</span>
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">I_clamp</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;physical_model_params&quot;</span><span class="p">][</span><span class="s2">&quot;oscillators_params&quot;</span><span class="p">][</span><span class="s2">&quot;Iclamp&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">I_clamp</span>
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">power_var_percentage</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;physical_model_params&quot;</span><span class="p">][</span><span class="s2">&quot;oscillators_params&quot;</span><span class="p">][</span><span class="s2">&quot;power_var_percentage&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">power_var_percentage</span>
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">Q</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;physical_model_params&quot;</span><span class="p">][</span><span class="s2">&quot;oscillators_params&quot;</span><span class="p">][</span><span class="s2">&quot;Q&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">Q</span>
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">R_osc</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;physical_model_params&quot;</span><span class="p">][</span><span class="s2">&quot;oscillators_params&quot;</span><span class="p">][</span><span class="s2">&quot;R_osc&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">R_osc</span>
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">scaling</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">config</span><span class="p">[</span><span class="s2">&quot;physical_model_params&quot;</span><span class="p">][</span><span class="s2">&quot;oscillators_params&quot;</span><span class="p">][</span><span class="s2">&quot;scaling&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">scaling</span></div>
+
+
+<span class="c1">#</span>
+<span class="c1"># def override_config(config, args):</span>
+<span class="c1">#     prefixes = [&#39;selection_&#39;, &#39;evaluation_&#39;]</span>
+<span class="c1">#     excluded_sections = [&#39;UID&#39;]</span>
+<span class="c1">#     for section in config:</span>
+<span class="c1">#         for key, value in vars(args).items():</span>
+<span class="c1">#             if value is not None:</span>
+<span class="c1">#                 if key in config[section]:</span>
+<span class="c1">#                     config[section][remove_prefix(key, prefixes)] = value</span>
+<span class="c1">#     return config</span>
+
+<div class="viewcode-block" id="update_config"><a class="viewcode-back" href="../utils.html#utils.update_config">[docs]</a><span class="k">def</span> <span class="nf">update_config</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">dic</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">dic</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">set_recursively</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;    </span><span class="si">{}</span><span class="s2">: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="remove_prefix"><a class="viewcode-back" href="../utils.html#utils.remove_prefix">[docs]</a><span class="k">def</span> <span class="nf">remove_prefix</span><span class="p">(</span><span class="n">string</span><span class="p">,</span> <span class="n">prefix</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">string</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">prefix</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">string</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">prefix</span><span class="p">):]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">string</span></div>
+
+
+<div class="viewcode-block" id="save_config"><a class="viewcode-back" href="../utils.html#utils.save_config">[docs]</a><span class="k">def</span> <span class="nf">save_config</span><span class="p">(</span><span class="n">in_config</span><span class="p">,</span> <span class="n">config_name</span><span class="o">=</span><span class="s2">&quot;config&quot;</span><span class="p">,</span> <span class="n">save_dir</span><span class="o">=</span><span class="s1">&#39;../results&#39;</span><span class="p">):</span>
+    <span class="n">save_config_yaml</span><span class="p">(</span><span class="n">in_config</span><span class="p">,</span> <span class="n">config_name</span><span class="o">=</span><span class="n">config_name</span> <span class="o">+</span> <span class="s1">&#39;.yaml&#39;</span><span class="p">,</span> <span class="n">save_dir</span><span class="o">=</span><span class="n">save_dir</span><span class="p">)</span>
+    <span class="n">save_config_json</span><span class="p">(</span><span class="n">in_config</span><span class="p">,</span> <span class="n">config_name</span><span class="o">=</span><span class="n">config_name</span> <span class="o">+</span> <span class="s1">&#39;.json&#39;</span><span class="p">,</span> <span class="n">save_dir</span><span class="o">=</span><span class="n">save_dir</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="save_config_yaml"><a class="viewcode-back" href="../utils.html#utils.save_config_yaml">[docs]</a><span class="k">def</span> <span class="nf">save_config_yaml</span><span class="p">(</span><span class="n">in_config</span><span class="p">,</span> <span class="n">config_name</span><span class="o">=</span><span class="s2">&quot;config_spinMLP.yaml&quot;</span><span class="p">,</span> <span class="n">save_dir</span><span class="o">=</span><span class="s1">&#39;../Optuna_results&#39;</span><span class="p">):</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">save_dir</span><span class="p">,</span> <span class="n">config_name</span><span class="p">),</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">yaml</span><span class="o">.</span><span class="n">safe_dump</span><span class="p">(</span><span class="n">in_config</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="save_config_json"><a class="viewcode-back" href="../utils.html#utils.save_config_json">[docs]</a><span class="k">def</span> <span class="nf">save_config_json</span><span class="p">(</span><span class="n">in_config</span><span class="p">,</span> <span class="n">config_name</span><span class="o">=</span><span class="s2">&quot;config.json&quot;</span><span class="p">,</span> <span class="n">save_dir</span><span class="o">=</span><span class="s1">&#39;../Optuna_results&#39;</span><span class="p">):</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">save_dir</span><span class="p">,</span> <span class="n">config_name</span><span class="p">),</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">in_config</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span></div>
+    <span class="c1"># with open(os.path.join(config_dir, &#39;args_parameters.txt&#39;), &#39;r&#39;) as f:</span>
+    <span class="c1">#     config = json.load(f)</span>
+
+
+<div class="viewcode-block" id="get_path_from_UID"><a class="viewcode-back" href="../utils.html#utils.get_path_from_UID">[docs]</a><span class="k">def</span> <span class="nf">get_path_from_UID</span><span class="p">(</span><span class="n">sim_dir</span><span class="p">,</span> <span class="n">UID</span><span class="p">):</span>
+    <span class="n">config_dir</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">for</span> <span class="n">dirpath</span><span class="p">,</span> <span class="n">dirnames</span><span class="p">,</span> <span class="n">filenames</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">sim_dir</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">dirname</span> <span class="ow">in</span> <span class="n">dirnames</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">dirname</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">UID</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sim_dir</span><span class="p">,</span> <span class="n">dirname</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">config_dir</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="s2">&quot;Config dir not found&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_recursively"><a class="viewcode-back" href="../utils.html#utils.get_recursively">[docs]</a><span class="k">def</span> <span class="nf">get_recursively</span><span class="p">(</span><span class="n">in_dict</span><span class="p">,</span> <span class="n">target_key</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">in_dict</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">target_key</span> <span class="ow">in</span> <span class="n">in_dict</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">in_dict</span><span class="p">[</span><span class="n">target_key</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">in_dict</span><span class="p">:</span>
+            <span class="n">target_value</span> <span class="o">=</span> <span class="n">get_recursively</span><span class="p">(</span><span class="n">in_dict</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">target_key</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">target_value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">target_value</span>
+    <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="set_recursively"><a class="viewcode-back" href="../utils.html#utils.set_recursively">[docs]</a><span class="k">def</span> <span class="nf">set_recursively</span><span class="p">(</span><span class="n">in_dict</span><span class="p">,</span> <span class="n">lookup_key</span><span class="p">,</span> <span class="n">new_val</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">in_dict</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">in_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="n">lookup_key</span><span class="p">:</span>
+                <span class="n">in_dict</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_val</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">set_recursively</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">lookup_key</span><span class="p">,</span> <span class="n">new_val</span><span class="p">)</span></div>
+    <span class="c1"># elif isinstance(in_dict, list):</span>
+    <span class="c1">#     for item in in_dict:</span>
+    <span class="c1">#         yield from item_generator(item, lookup_key)</span>
+
+
+<div class="viewcode-block" id="write_dict"><a class="viewcode-back" href="../utils.html#utils.write_dict">[docs]</a><span class="k">def</span> <span class="nf">write_dict</span><span class="p">(</span><span class="n">in_dic</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+    <span class="n">dic</span> <span class="o">=</span> <span class="n">in_dic</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">dic</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Tensor</span><span class="p">):</span>
+            <span class="n">dic</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">dic</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="write_csv"><a class="viewcode-back" href="../utils.html#utils.write_csv">[docs]</a><span class="k">def</span> <span class="nf">write_csv</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">header</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">newline</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">csv_file</span><span class="p">:</span>
+        <span class="n">csv_writer</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">writer</span><span class="p">(</span><span class="n">csv_file</span><span class="p">)</span>
+        <span class="n">csv_writer</span><span class="o">.</span><span class="n">writerow</span><span class="p">(</span><span class="n">header</span><span class="p">)</span>  <span class="c1"># write header</span>
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+            <span class="n">csv_writer</span><span class="o">.</span><span class="n">writerow</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>  <span class="c1"># write each row</span></div>
+
+
+<div class="viewcode-block" id="write_csv_from_dict"><a class="viewcode-back" href="../utils.html#utils.write_csv_from_dict">[docs]</a><span class="k">def</span> <span class="nf">write_csv_from_dict</span><span class="p">(</span><span class="n">in_dic</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+    <span class="n">dic</span> <span class="o">=</span> <span class="n">in_dic</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">field_names</span> <span class="o">=</span> <span class="n">dic</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">dic</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Tensor</span><span class="p">):</span>
+            <span class="n">dic</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span> <span class="o">+</span> <span class="s1">&#39;.csv&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">newline</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">csvfile</span><span class="p">:</span>
+        <span class="c1"># writer = csv.DictWriter(csvfile, fieldnames=field_names)</span>
+        <span class="n">writer</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">writer</span><span class="p">(</span><span class="n">csvfile</span><span class="p">)</span>
+        <span class="n">writer</span><span class="o">.</span><span class="n">writerow</span><span class="p">(</span><span class="n">dic</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="c1"># writer.writeheader()</span>
+        <span class="n">writer</span><span class="o">.</span><span class="n">writerows</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">dic</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span></div>
+
+
+<div class="viewcode-block" id="absoluteFilePaths"><a class="viewcode-back" href="../utils.html#utils.absoluteFilePaths">[docs]</a><span class="k">def</span> <span class="nf">absoluteFilePaths</span><span class="p">(</span><span class="n">directory</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">dirpath</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">filenames</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">directory</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">filenames</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dirpath</span><span class="p">,</span> <span class="n">f</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="counts_targets"><a class="viewcode-back" href="../utils.html#utils.counts_targets">[docs]</a><span class="k">def</span> <span class="nf">counts_targets</span><span class="p">(</span><span class="n">targets</span><span class="p">,</span> <span class="n">classes</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="s2">&quot;Class&quot;</span><span class="si">:</span><span class="s1">&lt;8</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="s2">&quot;Counts&quot;</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">all_counts</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">targets</span><span class="p">,</span> <span class="nb">sorted</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">return_counts</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">classes</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">counts</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">all_counts</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">classes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;:&quot;</span><span class="si">:</span><span class="s1">&lt;8</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">counts</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">counts</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">all_counts</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">i</span> <span class="o">+</span> <span class="s2">&quot;:&quot;</span><span class="si">:</span><span class="s1">&lt;8</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">counts</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Total samples: </span><span class="si">{</span><span class="n">all_counts</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="show_dataset_counts"><a class="viewcode-back" href="../utils.html#utils.show_dataset_counts">[docs]</a><span class="k">def</span> <span class="nf">show_dataset_counts</span><span class="p">(</span><span class="n">dataset</span><span class="p">:</span> <span class="n">Dataset</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">Dataset</span><span class="p">):</span>
+        <span class="n">counts_targets</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">targets</span><span class="p">,</span> <span class="n">dataset</span><span class="o">.</span><span class="n">classes</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="confusion_matrix"><a class="viewcode-back" href="../utils.html#utils.confusion_matrix">[docs]</a><span class="k">def</span> <span class="nf">confusion_matrix</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">,</span> <span class="n">sample_weight</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">sample_weight</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">sample_weight</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">y_true</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">sample_weight</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">sample_weight</span><span class="p">)</span>
+
+    <span class="n">n_labels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">y_true</span><span class="p">)</span><span class="o">.</span><span class="n">size</span>
+
+    <span class="n">cm</span> <span class="o">=</span> <span class="n">coo_matrix</span><span class="p">(</span>
+        <span class="p">(</span><span class="n">sample_weight</span><span class="p">,</span> <span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">)),</span>
+        <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">n_labels</span><span class="p">,</span> <span class="n">n_labels</span><span class="p">)</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">toarray</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">cm</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Arnaud De Riz.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

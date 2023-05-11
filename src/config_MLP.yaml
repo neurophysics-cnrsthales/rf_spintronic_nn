@@ -1,0 +1,36 @@
+UID: 00000000-000000
+torch_seed: 0
+
+dataset_params:
+  name: 'drones_signals' # Either 'drones_signals' or 'MNIST'
+  input_freq_min: 0.02
+  input_freq_max: 0.12
+
+data_loaders_params:
+  train_batch_size: 256
+  test_batch_size: 500
+  shuffle: True
+
+lr: 0.03571156133891213
+model: "MLP" # Model can be either "MLP" or "spinMLP"
+hidden_size: [128]
+
+model_evaluation_params:
+  epochs: 100
+  nb_repeats: 100
+
+model_selection_params:
+  epochs: 100
+  method: 'repeated_stratified_kfold'
+  nb_repeats: 1
+  nb_splits: 5
+  nb_trials: 100
+  random_state: 0
+  trial_objective: accuracy
+
+
+
+
+
+
+

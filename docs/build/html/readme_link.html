@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RF spintronic neural networks &mdash; Spintronic Neural Network  documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="visualization module" href="visualization.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Spintronic Neural Network
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">src</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">About:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">RF spintronic neural networks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#setup">Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#usage">Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#reproduce-the-procedure-used-to-obtain-the-results-of-figure-4-of-our-paper">Reproduce the procedure used to obtain the results of Figure 4 of our paper.</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#references">References</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Spintronic Neural Network</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">RF spintronic neural networks</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/readme_link.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="rf-spintronic-neural-networks">
+<h1>RF spintronic neural networks<a class="headerlink" href="#rf-spintronic-neural-networks" title="Permalink to this heading"></a></h1>
+<p>This repository contains the code to simulate hardware artificial neural networks where neurons and synapses are implemented by radiofrequency spintronic devices.</p>
+<p>The RF spintronic neural network concept and experimental demonstration can be found in the article “Multilayer spintronic neural networks with radio-frequency connections” by Ross, Leroux et al. [1], available <a class="reference external" href="https://arxiv.org/abs/2211.03659">here</a></p>
+<p>In particular, this code can be used to reproduce the results of the drone classification task, which dataset can be downloaded <a class="reference external" href="https://zenodo.org/record/7646236#.Y-4QbBOZOqU">here</a> and is inspired from [2].</p>
+<section id="setup">
+<h2>Setup<a class="headerlink" href="#setup" title="Permalink to this heading"></a></h2>
+<p>In order to avoid potential conflicts with other packages it is strongly recommended to use a <a class="reference external" href="https://docs.python.org/3/tutorial/venv.html">virtual environment (venv)</a> or a <a class="reference external" href="https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-environments.html">conda environment</a>.
+The dependencies are:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://www.python.org/">Python</a> 3.11</p></li>
+<li><p><a class="reference external" href="https://pytorch.org/">Pytorch</a> 2.0.1</p></li>
+<li><p><a class="reference external" href="https://optuna.org/">Optuna</a> 3.1.1</p></li>
+<li><p><a class="reference external" href="https://scikit-learn.org/stable/index.html">scikit-learn</a> 1.2.2</p></li>
+<li><p><a class="reference external" href="https://matplotlib.org/">matplotlib</a> 3.7.1</p></li>
+<li><p><a class="reference external" href="https://docs.h5py.org/en/latest/build.html">h5py</a> 3.7.0</p></li>
+<li><p><a class="reference external" href="https://pandas.pydata.org/">pandas</a> 1.5.3</p></li>
+</ul>
+<p>The <em>requirements.yml</em> file can be used to create the environment with the command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">create</span> <span class="o">--</span><span class="n">name</span> <span class="n">environment_name</span> <span class="o">--</span><span class="n">file</span> <span class="n">requirements</span><span class="o">.</span><span class="n">yml</span>
+<span class="n">conda</span> <span class="n">activate</span> <span class="n">environment_name</span>
+</pre></div>
+</div>
+</section>
+<section id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this heading"></a></h2>
+<p>The code can run three different procedures:</p>
+<ul class="simple">
+<li><p>Selection of the best hyper-parameters followed by training and evaluation of a network on the entire dataset</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">main</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">procedure</span> <span class="n">select_train_eval</span>  
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Training and evaluation of a network</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">main</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">procedure</span> <span class="n">train_eval</span>  
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Evaluation of an existing model (need to load one) on the test dataset</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">main</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">procedure</span> <span class="nb">eval</span>  
+</pre></div>
+</div>
+<p>The configuration file contain all the simulation parameters. The two different models can be selected by editing the field <em>model</em> either spintronic network (spinMLP) or a standard neural network (MLP).</p>
+<p>By default, the physical model do not consider the nonidealities of the magnetic tunnel junctions. To take into account the nonidealities you have to use the flag –with-nonidealities:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">main</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">procedure</span> <span class="n">select_train_eval</span> <span class="o">--</span><span class="k">with</span><span class="o">-</span><span class="n">nonidealities</span>
+</pre></div>
+</div>
+<p>The nonidealities that are implemented as the variation of the resonance frequencies, the variation of the frequency and the power of the output signal of the oscillators. It can be adjusted using</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">main</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">procedure</span> <span class="n">select_train_eval</span> <span class="o">--</span><span class="k">with</span><span class="o">-</span><span class="n">nonidealities</span> <span class="o">--</span><span class="n">freq</span><span class="o">-</span><span class="n">var</span><span class="o">-</span><span class="n">percentage</span> <span class="mf">0.001</span> <span class="o">--</span><span class="n">power</span><span class="o">-</span><span class="n">var</span><span class="o">-</span><span class="n">percentage</span> <span class="mf">0.001</span>  
+</pre></div>
+</div>
+<p>where 1.0 corresponds to 100%.<br />
+The results are saved in the <em>results</em> directory where there is one directory for each procedure.</p>
+</section>
+<section id="reproduce-the-procedure-used-to-obtain-the-results-of-figure-4-of-our-paper">
+<h2>Reproduce the procedure used to obtain the results of Figure 4 of our paper.<a class="headerlink" href="#reproduce-the-procedure-used-to-obtain-the-results-of-figure-4-of-our-paper" title="Permalink to this heading"></a></h2>
+<p><img alt="fig4b" src="fig4b_accuracy_comparison.png" /></p>
+<p>Disclaimer: While it is possible for us to reproduce exactly the accuracy given in the paper, the results are not <strong>exactly</strong> reproducible if the code run on an other machine. This is actually a known issue (see <a class="reference external" href="https://discuss.pytorch.org/t/reproducibility-over-different-machines/63047">Pytorch forum</a>). However, it is expected that you find very close results.</p>
+<p>In order to reproduce the training and evaluation procedure for the spintronic MLP and the standard MLP, we need two commands:</p>
+<ul class="simple">
+<li><p>Execute the code with the spintronic MLP model:</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">main</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">procedure</span> <span class="n">train_eval</span> <span class="o">--</span><span class="n">config</span> <span class="n">config_spinMLP</span><span class="o">.</span><span class="n">yaml</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Execute the code with the standard MLP model:</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">main</span><span class="o">.</span><span class="n">py</span> <span class="o">--</span><span class="n">procedure</span> <span class="n">train_eval</span> <span class="o">--</span><span class="n">config</span> <span class="n">config_MLP</span><span class="o">.</span><span class="n">yaml</span>  
+</pre></div>
+</div>
+<p>The results will be saved in the directory results/train_eval under the names YYYYmmdd-HHMMSS-&lt;model_name&gt;.</p>
+</section>
+<section id="references">
+<h2>References<a class="headerlink" href="#references" title="Permalink to this heading"></a></h2>
+<p>[1] Ross, A., Leroux, N., de Riz, A., Marković, D., Sanz-Hernández, D., Trastoy, J., … &amp; Grollier, J. (2022). “Multilayer spintronic neural networks with radio-frequency connections”. arXiv preprint arXiv:2211.03659.</p>
+<p>[2] S. Basak, S. Rajendran, S. Pollin and B. Scheers, “Drone classification from RF fingerprints using deep residual nets,” <em>2021 International Conference on COMmunication Systems &amp; NETworkS (COMSNETS)</em>, Bangalore, India, 2021, pp. 548-555, doi: 10.1109/COMSNETS51098.2021.9352891.
+<a class="reference external" href="https://github.com/sanjoy-basak/dronesignals">link to dataset</a>.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="visualization.html" class="btn btn-neutral float-left" title="visualization module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Arnaud De Riz.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

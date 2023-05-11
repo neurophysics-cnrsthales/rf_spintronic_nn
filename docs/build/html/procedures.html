@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>procedures module &mdash; Spintronic Neural Network  documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="utils module" href="utils.html" />
+    <link rel="prev" title="networks module" href="networks.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Spintronic Neural Network
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">src</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="data_loaders.html">data_loaders module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="datasets.html">datasets module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="freq_distributions.html">freq_distributions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="networks.html">networks module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">procedures module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html">utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="visualization.html">visualization module</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">About:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="readme_link.html">RF spintronic neural networks</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Spintronic Neural Network</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">src</a></li>
+      <li class="breadcrumb-item active">procedures module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/procedures.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-procedures">
+<span id="procedures-module"></span><h1>procedures module<a class="headerlink" href="#module-procedures" title="Permalink to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="procedures.callback">
+<span class="sig-prename descclassname"><span class="pre">procedures.</span></span><span class="sig-name descname"><span class="pre">callback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">study</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trial</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/procedures.html#callback"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#procedures.callback" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="procedures.create_study">
+<span class="sig-prename descclassname"><span class="pre">procedures.</span></span><span class="sig-name descname"><span class="pre">create_study</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trial_objective</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/procedures.html#create_study"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#procedures.create_study" title="Permalink to this definition"></a></dt>
+<dd><p>Create an optuna study with the right direction of optimization for the desired objective function (either the
+loss, the error or the accuracy).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>trial_objective</strong> (<em>str</em>) – A string containing the name of the desired objective function (either the loss, the</p></li>
+<li><p><strong>accuracy</strong><strong>)</strong><strong>.</strong> (<em>error</em><em> or </em><em>the</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Optuna study</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="procedures.get_trial_params">
+<span class="sig-prename descclassname"><span class="pre">procedures.</span></span><span class="sig-name descname"><span class="pre">get_trial_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trial</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Trial</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nb_hidden_layers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">dict</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/procedures.html#get_trial_params"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#procedures.get_trial_params" title="Permalink to this definition"></a></dt>
+<dd><p>Create two dictionaries containing the right hyperparameters for a given model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>trial</strong> (<em>object</em>) – A Trial instance representing a process of evaluating an objective function</p></li>
+<li><p><strong>model_name</strong> (<em>str</em>) – A string containing the name of the input model</p></li>
+<li><p><strong>nb_hidden_layers</strong> (<em>int</em>) – The number of hidden layers corresponds to the number of hyperparameters per category.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Two dictionaries that contains the hyperparameters associated to the input model.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="procedures.model_selection">
+<span class="sig-prename descclassname"><span class="pre">procedures.</span></span><span class="sig-name descname"><span class="pre">model_selection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'..\\results'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">device(type='cpu')</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_nonidealities</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/procedures.html#model_selection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#procedures.model_selection" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="procedures.model_selection_objective">
+<span class="sig-prename descclassname"><span class="pre">procedures.</span></span><span class="sig-name descname"><span class="pre">model_selection_objective</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trial</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_trainer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">selection_params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_loaders_params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_test_datasets</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trial_objective</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">torch_seed</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/procedures.html#model_selection_objective"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#procedures.model_selection_objective" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="procedures.model_testing">
+<span class="sig-prename descclassname"><span class="pre">procedures.</span></span><span class="sig-name descname"><span class="pre">model_testing</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">device(type='cpu')</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'./results/evaluation'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/procedures.html#model_testing"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#procedures.model_testing" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="procedures.model_train_eval">
+<span class="sig-prename descclassname"><span class="pre">procedures.</span></span><span class="sig-name descname"><span class="pre">model_train_eval</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save_dir</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'..\\results'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">device(type='cpu')</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_nonidealities</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/procedures.html#model_train_eval"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#procedures.model_train_eval" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="procedures.train_eval_loop">
+<span class="sig-prename descclassname"><span class="pre">procedures.</span></span><span class="sig-name descname"><span class="pre">train_eval_loop</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_loader</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">valid_loader</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">criterion</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimizer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nb_epochs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trial</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trial_iter_nb</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trial_objective</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'accuracy'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_trainer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/procedures.html#train_eval_loop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#procedures.train_eval_loop" title="Permalink to this definition"></a></dt>
+<dd><p>Training procedure for the neural networks.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="procedures.model">
+<span class="sig-prename descclassname"><span class="pre">procedures.</span></span><span class="sig-name descname"><span class="pre">model</span></span><a class="headerlink" href="#procedures.model" title="Permalink to this definition"></a></dt>
+<dd><p>Pytorch model of nn.Module objects such as fully connected layers</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>nn.Module</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="procedures.train_loader">
+<span class="sig-prename descclassname"><span class="pre">procedures.</span></span><span class="sig-name descname"><span class="pre">train_loader</span></span><a class="headerlink" href="#procedures.train_loader" title="Permalink to this definition"></a></dt>
+<dd><p>Pytorch DataLoader object associated to the training set.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="procedures.valid_loader">
+<span class="sig-prename descclassname"><span class="pre">procedures.</span></span><span class="sig-name descname"><span class="pre">valid_loader</span></span><a class="headerlink" href="#procedures.valid_loader" title="Permalink to this definition"></a></dt>
+<dd><p>Pytorch DataLoader object associated to the validation set.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="procedures.criterion">
+<span class="sig-prename descclassname"><span class="pre">procedures.</span></span><span class="sig-name descname"><span class="pre">criterion</span></span><a class="headerlink" href="#procedures.criterion" title="Permalink to this definition"></a></dt>
+<dd><p>Pytorch criterion (loss function).</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="procedures.optimizer">
+<span class="sig-prename descclassname"><span class="pre">procedures.</span></span><span class="sig-name descname"><span class="pre">optimizer</span></span><a class="headerlink" href="#procedures.optimizer" title="Permalink to this definition"></a></dt>
+<dd><p>Pytorch optimizer such as SGD and Adam.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="procedures.device">
+<span class="sig-prename descclassname"><span class="pre">procedures.</span></span><span class="sig-name descname"><span class="pre">device</span></span><a class="headerlink" href="#procedures.device" title="Permalink to this definition"></a></dt>
+<dd><p>Pytorch torch.device object.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="procedures.nb_epochs">
+<span class="sig-prename descclassname"><span class="pre">procedures.</span></span><span class="sig-name descname"><span class="pre">nb_epochs</span></span><a class="headerlink" href="#procedures.nb_epochs" title="Permalink to this definition"></a></dt>
+<dd><p>Number of time the whole input dataloaders are used during the training session.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="procedures.trial">
+<span class="sig-prename descclassname"><span class="pre">procedures.</span></span><span class="sig-name descname"><span class="pre">trial</span></span><a class="headerlink" href="#procedures.trial" title="Permalink to this definition"></a></dt>
+<dd><p>Optuna trial object.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="procedures.trial_iter_nb">
+<span class="sig-prename descclassname"><span class="pre">procedures.</span></span><span class="sig-name descname"><span class="pre">trial_iter_nb</span></span><a class="headerlink" href="#procedures.trial_iter_nb" title="Permalink to this definition"></a></dt>
+<dd><p>The index associated to the number of time the training procedure is done.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="procedures.verbose">
+<span class="sig-prename descclassname"><span class="pre">procedures.</span></span><span class="sig-name descname"><span class="pre">verbose</span></span><a class="headerlink" href="#procedures.verbose" title="Permalink to this definition"></a></dt>
+<dd><p>If true, print extra information about the training procedure such as the loss and the accuracy.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="procedures.trial_objective">
+<span class="sig-prename descclassname"><span class="pre">procedures.</span></span><span class="sig-name descname"><span class="pre">trial_objective</span></span><a class="headerlink" href="#procedures.trial_objective" title="Permalink to this definition"></a></dt>
+<dd><p>The desired objective function for the optimization procedure.</p>
+</dd></dl>
+
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A tuple containing two dictionaries, each one containing the metrics associated to the training and
+the validation procedure respectively.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="procedures.train_model_one_epoch">
+<span class="sig-prename descclassname"><span class="pre">procedures.</span></span><span class="sig-name descname"><span class="pre">train_model_one_epoch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_loader</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">criterion</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimizer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_loss</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_correct</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_trainer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/procedures.html#train_model_one_epoch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#procedures.train_model_one_epoch" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="procedures.train_model_trainer_one_epoch">
+<span class="sig-prename descclassname"><span class="pre">procedures.</span></span><span class="sig-name descname"><span class="pre">train_model_trainer_one_epoch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_loader</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">criterion</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optimizer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_loss</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">train_correct</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_trainer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/procedures.html#train_model_trainer_one_epoch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#procedures.train_model_trainer_one_epoch" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="procedures.train_one_epoch">
+<span class="sig-prename descclassname"><span class="pre">procedures.</span></span><span class="sig-name descname"><span class="pre">train_one_epoch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_trainer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/procedures.html#train_one_epoch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#procedures.train_one_epoch" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="networks.html" class="btn btn-neutral float-left" title="networks module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="utils.html" class="btn btn-neutral float-right" title="utils module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Arnaud De Riz.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>networks module &mdash; Spintronic Neural Network  documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="procedures module" href="procedures.html" />
+    <link rel="prev" title="freq_distributions module" href="freq_distributions.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Spintronic Neural Network
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">src</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="data_loaders.html">data_loaders module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="datasets.html">datasets module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="freq_distributions.html">freq_distributions module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">networks module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="procedures.html">procedures module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html">utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="visualization.html">visualization module</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">About:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="readme_link.html">RF spintronic neural networks</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Spintronic Neural Network</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">src</a></li>
+      <li class="breadcrumb-item active">networks module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/networks.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-networks">
+<span id="networks-module"></span><h1>networks module<a class="headerlink" href="#module-networks" title="Permalink to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="networks.LayerChainsResonators">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">networks.</span></span><span class="sig-name descname"><span class="pre">LayerChainsResonators</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nb_resonators_per_chain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nb_chains</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bias</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">freq_res_bounds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">signed_connection</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'k+1'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Ith_res</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">10.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">freq_res_distrib</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'non_linear'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight_scaling</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bias_scaling</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.01</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">damping</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.01</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_with_nonidealities</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">freq_var_percentage</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.01</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/networks.html#LayerChainsResonators"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#networks.LayerChainsResonators" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></p>
+<p>Create a set of chains of resonators acting as a neural network layer.</p>
+<p>Given an input RF current as an input of a resonator, the resonator will induce a voltage rectification given by
+an expression obtained that corresponds to the analytic model of the paper. The complete expression of the
+voltage rectification of the resonator <span class="math notranslate nohighlight">\(k\)</span> of the chain <span class="math notranslate nohighlight">\(j\)</span> submitted to the input signal <span class="math notranslate nohighlight">\(i\)</span> is</p>
+<div class="math notranslate nohighlight">
+\[v_{ijk} = (-1)^k P_i G_{ijk}\]</div>
+<p>where the factor <span class="math notranslate nohighlight">\((-1)^k\)</span> take into account the fact that the resonators inside a chain are connected
+alternatively in series, <span class="math notranslate nohighlight">\(P_i\)</span> is the power of the input signal <span class="math notranslate nohighlight">\(i\)</span>, <span class="math notranslate nohighlight">\(G\)</span> is the rectification
+tensor:</p>
+<div class="math notranslate nohighlight">
+\[G_{ijk}= \frac{2\alpha f_{jk}^{\text{res}} (f_i^{\text{in}}-f_{jk}^{\text{res}})}{(\alpha  \
+f_{jk}^{\text{res}})^2+(f_i^{\text{in}}-f_{jk}^{\text{res}})^2} K_{SD}\]</div>
+<p>where <span class="math notranslate nohighlight">\(f_i^{\text{in}}\)</span> is the frequency of the input signal <span class="math notranslate nohighlight">\(i\)</span> and <span class="math notranslate nohighlight">\(f_{jk}^{\text{res}}\)</span> is the
+frequency of the resonator <span class="math notranslate nohighlight">\(k\)</span> of the chain <span class="math notranslate nohighlight">\(j\)</span> at resonance and <span class="math notranslate nohighlight">\(\alpha\)</span> is the Gilbert damping.</p>
+<p>Finally,</p>
+<div class="math notranslate nohighlight">
+\[K_{SD} = \frac{\Delta R}{R}\frac{1}{I_{\text{th}}}\frac{\tan \gamma_p}{8\sqrt{2}}\beta_s\]</div>
+<p>where it is assumed that the TMR <span class="math notranslate nohighlight">\(\frac{\Delta R}{R}\approx 1\)</span>, the shape factor <span class="math notranslate nohighlight">\(\beta_s\approx 1\)</span> and
+<span class="math notranslate nohighlight">\(\frac{\tan \gamma_p}{8\sqrt{2}}\approx 0.088\)</span> (<span class="math notranslate nohighlight">\(\gamma_p=\pi/4\)</span>).</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul class="simple">
+<li><p>For convenience, we can change the connection between resonators by choosing either <span class="math notranslate nohighlight">\((-1)^{k}\)</span> or
+<span class="math notranslate nohighlight">\((-1)^{k+1}\)</span>.</p></li>
+<li><p>For the input powers of physical MLP, it is expected that <span class="math notranslate nohighlight">\(P_i\in [0,1]\)</span> where 1 corresponds to
+<span class="math notranslate nohighlight">\(1\, \mu W\)</span>.</p></li>
+<li><p>For the frequencies <span class="math notranslate nohighlight">\(f_i^{\text{in}}\)</span> and <span class="math notranslate nohighlight">\(f_{jk}^{\text{res}}\)</span> the order of magnitude is the
+<strong>GHz</strong>.</p></li>
+<li><p>It is expected that <span class="math notranslate nohighlight">\(I_{th}\approx 10\mu A\)</span>. Since the order of magnitude of both power and
+current is the same (<span class="math notranslate nohighlight">\(\mu W\)</span> and <span class="math notranslate nohighlight">\(\mu A\)</span>) they are compensated, meaning we don’t need to write the
+factors of the order of magnitude.</p></li>
+</ul>
+</div>
+<p id="rectification">In this model, it is normally assumed that the signal fed in the resonator has only one frequency component (need
+check). But it seems (need ref) that the total voltage rectification of one resonator of an analog input signal
+corresponds to the integral over the “frequency domain of rectification” of the analytic model [1]. While in
+practice this domain have a finite length, in the model it has an infinite length. We need to keep that in mind.
+Therefore, given an RF current as an input of a chain of resonators, each resonator will rectify the input
+signal. In our case, the input signal is either a real analog signal, e.g. an RF signal, or an artificial signal
+made of an arbitrary set of frequencies, e.g. the pixels of an image encoded into one RF current (MLP case) or
+into different field lines interacting independently with each resonators of a chain (CNN case).</p>
+<p>Since we assumed that a resonator can rectify a signal composed of several frequency components, which is the
+case for an analog signal, the weight matrix is computed using</p>
+<div class="math notranslate nohighlight">
+\[W_{ji} = \sum_k(-1)^k G_{jik}\]</div>
+<p id="output-voltages">Finally, the output voltages of all chains are obtained through the linear transformation of the incoming signals:</p>
+<div class="math notranslate nohighlight">
+\[V = PW^T + b\]</div>
+<p>where <span class="math notranslate nohighlight">\(P\)</span> corresponds to the input powers vector, <span class="math notranslate nohighlight">\(W^T\)</span> is the transpose of weight matrix and
+<span class="math notranslate nohighlight">\(b\)</span> is the vector containing the bias voltages vector. This transpose operation is necessary because we are
+using the Pytorch class torch.nn.functional.linear.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>More explanation on the way to write the rectification function and the weight matrix can be found in [1].</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nb_resonators_per_chain</strong> (<em>int</em>) – Number of resonator inside one chain (chains supposed same length). It needs to
+be the same as the number of input frequencies if we do not consider overlap.</p></li>
+<li><p><strong>nb_chains</strong> (<em>int</em>) – Number of chains of resonators. It also corresponds to the number of outputs.</p></li>
+<li><p><strong>weight_scaling</strong> (<em>float</em>) – Scaling factor of the <strong>weight</strong> attribute.</p></li>
+<li><p><strong>bias_scaling</strong> (<em>float</em>) – Scaling factor for the <strong>bias</strong> attribute.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="networks.LayerChainsResonators.weight">
+<span class="sig-name descname"><span class="pre">weight</span></span><a class="headerlink" href="#networks.LayerChainsResonators.weight" title="Permalink to this definition"></a></dt>
+<dd><p>The learnable weights of the module with a shape <span class="math notranslate nohighlight">\((\text{nb_chains},
+\text{nb_resonators_per_chain})\)</span> that correspond to the shift with respect to the initial resonance
+frequencies of all resonators. Alternatively, it can correspond directly to the resonance frequencies of all
+resonators (for that need to uncomment a line in init_initial_res_freq).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="networks.LayerChainsResonators.bias">
+<span class="sig-name descname"><span class="pre">bias</span></span><a class="headerlink" href="#networks.LayerChainsResonators.bias" title="Permalink to this definition"></a></dt>
+<dd><p>The learnable biases of the module of shape <span class="math notranslate nohighlight">\((\text{nb_chains})\)</span>. Physically, it corresponds to
+voltage biases (one per chain).
+If <a class="reference internal" href="#networks.LayerChainsResonators.bias" title="networks.LayerChainsResonators.bias"><code class="xref py py-attr docutils literal notranslate"><span class="pre">bias</span></code></a> is <code class="docutils literal notranslate"><span class="pre">True</span></code>, the values are initialized from
+<span class="math notranslate nohighlight">\(\mathcal{N}(0, \sigma)\)</span> where <span class="math notranslate nohighlight">\(\sigma = \frac{0.01}{\sqrt{\text{nb_chains}}}\)</span>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="networks.LayerChainsResonators.initial_res_freq">
+<span class="sig-name descname"><span class="pre">initial_res_freq</span></span><a class="headerlink" href="#networks.LayerChainsResonators.initial_res_freq" title="Permalink to this definition"></a></dt>
+<dd><p>The initial resonance frequencies of a chain (same for all chains).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="networks.LayerChainsResonators.input_freq">
+<span class="sig-name descname"><span class="pre">input_freq</span></span><a class="headerlink" href="#networks.LayerChainsResonators.input_freq" title="Permalink to this definition"></a></dt>
+<dd><p>The input frequencies of the layer. By default, it corresponds to the initial
+freq_distribution of resonance frequencies. It can be modified by using the set_input_freq method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="networks.LayerChainsResonators.resonators_connection">
+<span class="sig-name descname"><span class="pre">resonators_connection</span></span><a class="headerlink" href="#networks.LayerChainsResonators.resonators_connection" title="Permalink to this definition"></a></dt>
+<dd><p>The factor that characterises the connection between the resonators of a chain. For a
+head-to-tail arrangement, it corresponds to the <span class="math notranslate nohighlight">\((-1)^k\)</span> factor (see N.Leroux et al, Phys. Rev.Applied 15
+,034067 (2021)).
+freq_res_min (float): The initial minimum resonance frequency of all chains (associated to the first resonator</p>
+<blockquote>
+<div><p>of each chain).</p>
+</div></blockquote>
+<dl class="simple">
+<dt>freq_res_max (float): The initial maximum resonance frequency of all chains (associated to the last resonator of</dt><dd><p>each chain).</p>
+</dd>
+</dl>
+<p>damping (float): The Gilbert damping parameter.
+Ith (float): The threshold current of the MTJ. While it exists in the case of excitation of a STNO, such</p>
+<blockquote>
+<div><p>threshold effect do not exist for the case of a resonator. However, it appears in the calculation of
+rectification.</p>
+</div></blockquote>
+<p>KSD (float): The spin torque sensitivity.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="networks.LayerChainsResonators.add_nonidealities">
+<span class="sig-name descname"><span class="pre">add_nonidealities</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parameter</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">var_percentage</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/networks.html#LayerChainsResonators.add_nonidealities"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#networks.LayerChainsResonators.add_nonidealities" title="Permalink to this definition"></a></dt>
+<dd><p>Modify the input tensor t using a sample <span class="math notranslate nohighlight">\(X\)</span> from a normal distribution <span class="math notranslate nohighlight">\(\mathcal{N}(0,1)\)</span> scaled
+by the variability percentage <span class="math notranslate nohighlight">\(\varepsilon\)</span> using the formula:</p>
+<div class="math notranslate nohighlight">
+\[t^{'} = t(1+X\varepsilon).\]</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="networks.LayerChainsResonators.extra_repr">
+<span class="sig-name descname"><span class="pre">extra_repr</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/networks.html#LayerChainsResonators.extra_repr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#networks.LayerChainsResonators.extra_repr" title="Permalink to this definition"></a></dt>
+<dd><p>Set the extra representation of the module</p>
+<p>To print customized extra information, you should re-implement
+this method in your own modules. Both single-line and multi-line
+strings are acceptable.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="networks.LayerChainsResonators.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_powers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tensor</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tensor</span></span></span><a class="reference internal" href="_modules/networks.html#LayerChainsResonators.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#networks.LayerChainsResonators.forward" title="Permalink to this definition"></a></dt>
+<dd><p>Performs a “linear” transformation on the input powers.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>input_powers</strong> – The input powers associated to the inputs signals. 1 unit power = <span class="math notranslate nohighlight">\(1\, \mu W\)</span>.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The product between the input powers and the rectification matrix whose elements {Wij} corresponds to the
+rectification function of the chain j submitted to an input signal i. Hence, it corresponds to a
+“vector” containing the <a class="reference internal" href="#output-voltages"><span class="std std-ref">rectification voltages</span></a> of all chains.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="networks.LayerChainsResonators.init_resonators_connection">
+<span class="sig-name descname"><span class="pre">init_resonators_connection</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/networks.html#LayerChainsResonators.init_resonators_connection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#networks.LayerChainsResonators.init_resonators_connection" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="networks.LayerChainsResonators.rectification">
+<span class="sig-name descname"><span class="pre">rectification</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/networks.html#LayerChainsResonators.rectification"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#networks.LayerChainsResonators.rectification" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="networks.LayerChainsResonators.reset_parameters">
+<span class="sig-name descname"><span class="pre">reset_parameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/networks.html#LayerChainsResonators.reset_parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#networks.LayerChainsResonators.reset_parameters" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="networks.LayerChainsResonators.set_input_freq">
+<span class="sig-name descname"><span class="pre">set_input_freq</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_freq</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/networks.html#LayerChainsResonators.set_input_freq"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#networks.LayerChainsResonators.set_input_freq" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="networks.LayerChainsResonators.training">
+<span class="sig-name descname"><span class="pre">training</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#networks.LayerChainsResonators.training" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="networks.LayerOscillators">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">networks.</span></span><span class="sig-name descname"><span class="pre">LayerOscillators</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nb_chains</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Q</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Ith_osc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Iclamp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">40</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">R_osc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scaling</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-06</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">amp_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.25</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_with_nonidealities</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">power_var_percentage</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.01</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/networks.html#LayerOscillators"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#networks.LayerOscillators" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></p>
+<p>Create a set of spin-transfer nano-oscillators (STNOs) corresponding to activation functions.
+The expression of the normalized output power of one STNO is:</p>
+<div class="math notranslate nohighlight">
+\[p = |c|^2 = \frac{\xi - 1}{\xi + Q} \quad (\text{if } \xi &gt; 1, 0 \, \text{otherwise})\]</div>
+<p>where <span class="math notranslate nohighlight">\(c\)</span> is the normalized amplitude of the stationary precession, <span class="math notranslate nohighlight">\(\xi=I_{
+\text{DC}}/I_{\text{th}}\)</span> and <span class="math notranslate nohighlight">\(Q\)</span> is the non-linear damping coefficient. In order to have a non-null output
+power, the input DC current <span class="math notranslate nohighlight">\(I_{\text{DC}}\)</span> must be superior to a threshold current <span class="math notranslate nohighlight">\(I_{\text{th}}\)</span>.
+The scaled output power is given by</p>
+<div class="math notranslate nohighlight">
+\[P = A \, p(I_{DC}) \,(\frac{\Delta R}{R}\beta )^2 \, R I_{DC}^2\]</div>
+<p>where <span class="math notranslate nohighlight">\(A\)</span> is a scaling factor, <span class="math notranslate nohighlight">\(\frac{\Delta R}{R}\)</span> is the TMR, <span class="math notranslate nohighlight">\(\beta\)</span> is the shape
+factor and <span class="math notranslate nohighlight">\(R\)</span> is the resistance of all the oscillators. We assume that the TMR is 100%
+(<span class="math notranslate nohighlight">\(\frac{\Delta R}{R}=1)\)</span> and the shape factor equal to 1 (<span class="math notranslate nohighlight">\(\beta \approx 1\)</span>) which reduces the
+expression to</p>
+<div class="math notranslate nohighlight">
+\[P = A \, p(I_{DC}) \, R\, I_{DC}^2\]</div>
+<p>Since the output powers cannot be negative, we clamped all the values of current inferior to the threshold current
+(including negative values) to <span class="math notranslate nohighlight">\(I_{\text{th}}\)</span>. This gives <span class="math notranslate nohighlight">\(\xi = 1\)</span> leading to a normalized power of
+0, thus an output power of 0. In addition to this, the currents are clamped at <span class="math notranslate nohighlight">\(4 I_{th}\)</span> to mimic the
+experimental prevention of the destruction of the oscillators.</p>
+<p>The variability of the output powers is implemented as a modification of the scaling factor using the method
+<a class="reference internal" href="#networks.LayerOscillators.add_nonidealities" title="networks.LayerOscillators.add_nonidealities"><code class="xref py py-func docutils literal notranslate"><span class="pre">add_nonidealities()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nb_chains</strong> (<em>int</em>) – Number of input chains of resonators</p></li>
+<li><p><strong>Q</strong> (<em>float</em>) – Non-linear damping coefficient. The value has to be positive (default: 2).</p></li>
+<li><p><strong>Ith_osc</strong> (<em>float</em>) – Threshold current (current necessary to get auto-oscillations).</p></li>
+<li><p><strong>Iclamp</strong> (<em>float</em>) – Current value above which the current is clamped.</p></li>
+<li><p><strong>R_osc</strong> (<em>float</em>) – Oscillators resistance.</p></li>
+<li><p><strong>scaling</strong> (<em>float</em>) – Scaling factor used to prevent vanishing gradient. This is due to the fact that the inputs
+values decrease while propagating in the network. It corresponds to a change of units from watt to microwatt
+which is the unit expected for the input of a LayerChainsResonators instance.</p></li>
+<li><p><strong>amp_factor</strong> (<em>float</em>) – It corresponds to the action of a power amplifier that adjust the output power of the
+oscillators.</p></li>
+<li><p><strong>is_with_nonidealities</strong> (<em>bool</em>) – If True, modify the output power with <a class="reference internal" href="#networks.LayerOscillators.add_nonidealities" title="networks.LayerOscillators.add_nonidealities"><code class="xref py py-func docutils literal notranslate"><span class="pre">add_nonidealities()</span></code></a>.</p></li>
+<li><p><strong>power_var_percentage</strong> (<em>float</em>) – Variability amplitude corresponding to the standard deviation of the normal
+distribution from which the samples are extracted (see <a class="reference internal" href="#networks.LayerOscillators.add_nonidealities" title="networks.LayerOscillators.add_nonidealities"><code class="xref py py-func docutils literal notranslate"><span class="pre">add_nonidealities()</span></code></a>)</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>It is expected that <span class="math notranslate nohighlight">\(Q=2\)</span>, <span class="math notranslate nohighlight">\(I_{th}\, \approx 10\mu A\)</span> and <span class="math notranslate nohighlight">\(R_{osc}\approx 1k\Omega\)</span>.</p>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="networks.LayerOscillators.add_nonidealities">
+<span class="sig-name descname"><span class="pre">add_nonidealities</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parameter</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">var_percentage</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/networks.html#LayerOscillators.add_nonidealities"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#networks.LayerOscillators.add_nonidealities" title="Permalink to this definition"></a></dt>
+<dd><p>Modify the input tensor t using a sample <span class="math notranslate nohighlight">\(X\)</span> from a normal distribution <span class="math notranslate nohighlight">\(\mathcal{N}(0,1)\)</span>
+scaled by the variability percentage <span class="math notranslate nohighlight">\(\varepsilon\)</span> using the formula:</p>
+<div class="math notranslate nohighlight">
+\[t^{'} = t(1+X\varepsilon).\]</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="networks.LayerOscillators.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_currents</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/networks.html#LayerOscillators.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#networks.LayerOscillators.forward" title="Permalink to this definition"></a></dt>
+<dd><p>Return the output powers of a set of STNOs.</p>
+<div class="math notranslate nohighlight">
+\[P = A \, p(I_{DC}) \, R\, I_{DC}^2\]</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="networks.LayerOscillators.normalized_stno_power">
+<span class="sig-name descname"><span class="pre">normalized_stno_power</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_currents</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/networks.html#LayerOscillators.normalized_stno_power"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#networks.LayerOscillators.normalized_stno_power" title="Permalink to this definition"></a></dt>
+<dd><p>Return the normalized output powers of a set of STNOs</p>
+<div class="math notranslate nohighlight">
+\[p = \frac{\xi - 1}{\xi + Q} \quad (\text{if } \xi &gt; 1, 0 \, \text{otherwise})\]</div>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="networks.LayerOscillators.training">
+<span class="sig-name descname"><span class="pre">training</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#networks.LayerOscillators.training" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="networks.MLP">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">networks.</span></span><span class="sig-name descname"><span class="pre">MLP</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">network_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bias</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/networks.html#MLP"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#networks.MLP" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></p>
+<p>Multilayered perceptron</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>network_size</strong> (<em>tuple</em>) – Tuple containing the number of input features, the size of each hidden layers and the
+number of output features.</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="networks.MLP.in_features">
+<span class="sig-name descname"><span class="pre">in_features</span></span><a class="headerlink" href="#networks.MLP.in_features" title="Permalink to this definition"></a></dt>
+<dd><p>Number of input features.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="networks.MLP.out_features">
+<span class="sig-name descname"><span class="pre">out_features</span></span><a class="headerlink" href="#networks.MLP.out_features" title="Permalink to this definition"></a></dt>
+<dd><p>Number of output features.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="networks.MLP.nb_layers">
+<span class="sig-name descname"><span class="pre">nb_layers</span></span><a class="headerlink" href="#networks.MLP.nb_layers" title="Permalink to this definition"></a></dt>
+<dd><p>Number of layers.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="networks.MLP.nb_hidden_layers">
+<span class="sig-name descname"><span class="pre">nb_hidden_layers</span></span><a class="headerlink" href="#networks.MLP.nb_hidden_layers" title="Permalink to this definition"></a></dt>
+<dd><p>Number of hidden layers.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="networks.MLP.layers">
+<span class="sig-name descname"><span class="pre">layers</span></span><a class="headerlink" href="#networks.MLP.layers" title="Permalink to this definition"></a></dt>
+<dd><p>List of nn.Linear modules.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ModuleList</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="networks.MLP.activations">
+<span class="sig-name descname"><span class="pre">activations</span></span><a class="headerlink" href="#networks.MLP.activations" title="Permalink to this definition"></a></dt>
+<dd><p>List of nn.ReLU modules.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>ModuleList</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="networks.MLP.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_powers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tensor</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/networks.html#MLP.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#networks.MLP.forward" title="Permalink to this definition"></a></dt>
+<dd><p>Defines the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Although the recipe for forward pass needs to be defined within
+this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="networks.MLP.reset_parameters">
+<span class="sig-name descname"><span class="pre">reset_parameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/networks.html#MLP.reset_parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#networks.MLP.reset_parameters" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="networks.MLP.training">
+<span class="sig-name descname"><span class="pre">training</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#networks.MLP.training" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="networks.instanciate_model">
+<span class="sig-prename descclassname"><span class="pre">networks.</span></span><span class="sig-name descname"><span class="pre">instanciate_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model_params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">device(type='cpu')</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/networks.html#instanciate_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#networks.instanciate_model" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="networks.spinMLP">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">networks.</span></span><span class="sig-name descname"><span class="pre">spinMLP</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">network_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_freq</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tensor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resonators_params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">oscillators_params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nb_input_resonators</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">freq_res_bounds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">freq_res_distrib</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">add_voltage_bias</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">voltage_to_current_factors</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_with_nonidealities</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/networks.html#spinMLP"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#networks.spinMLP" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></p>
+<p>The physical multi-layer perceptron. We assume that the number of resonators of the hidden layers is the
+same as the number of input hidden nodes (aka oscillators) for each layer. We also assume that each hidden layers
+have an activation function corresponding to the formula for the output power of the spin-torque nano-oscillators
+(<code class="xref py py-func docutils literal notranslate"><span class="pre">stno()</span></code>). This formula requires a current as an input, meaning that we need to convert
+the output voltages from the chains of resonators (with an additional voltage bias) to currents by using a
+voltage-to-current ratio <span class="math notranslate nohighlight">\(g_\text{m}\)</span>:</p>
+<div class="math notranslate nohighlight">
+\[I = (V^{\text{chains}} + V^{\text{layer}}) g_\text{m}\]</div>
+<p>In our case, we consider that the voltages unit is <span class="math notranslate nohighlight">\(mV\)</span> and the voltage-to-current ratio is in <span class="math notranslate nohighlight">\(\mu
+A/mV\)</span>. Each activation function converts the chains output voltages (previous layer) into powers. For each layers
+(except the last one), the power is amplified to reach a maximum of one. In fact, we consider that the input
+power (for each frequency) for each layer is preserved along each resonator chain. In reality, there is a power
+loss, but we consider implicitly that this loss is compensated by some artificial amplification.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>network_size</strong> (<em>tuple</em>) – Tuple containing the number of input frequencies for the first layer, the size of each
+hidden layers and the number of output features</p></li>
+<li><p><strong>input_freq</strong> (<em>Tensor</em>) – Input frequencies</p></li>
+<li><p><strong>resonators_params</strong> (<em>dict</em>) – Dictionary containing all the parameters of the resonators for the class
+<a class="reference internal" href="#networks.LayerChainsResonators" title="networks.LayerChainsResonators"><code class="xref py py-func docutils literal notranslate"><span class="pre">LayerChainsResonators()</span></code></a></p></li>
+<li><p><strong>oscillators_params</strong> (<em>dict</em>) – Dictionary containing all the parameters of the oscillators for the class
+<a class="reference internal" href="#networks.LayerOscillators" title="networks.LayerOscillators"><code class="xref py py-func docutils literal notranslate"><span class="pre">LayerOscillators()</span></code></a></p></li>
+<li><p><strong>freq_res_bounds</strong> (<em>[</em><em>list</em><em>[</em><em>list</em><em>[</em><em>float</em><em>]</em><em>]</em><em>]</em>) – A list containing the minimum and maximum frequencies for each layer.
+Example: [[0.020,0.120], [0.020,0.120]]</p></li>
+<li><p><strong>freq_res_distrib</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – List of string containing the type of resonance frequency distributions we use for
+each layer</p></li>
+<li><p><strong>add_voltage_bias</strong> (<em>list</em>) – Additional voltage bias (used for all chains).</p></li>
+<li><p><strong>voltage_to_current_factors</strong> (<em>list</em>) – Conversion factor (voltage_to_current_factors gm) (converting an input
+voltage into a current)</p></li>
+<li><p><strong>is_with_nonidealities</strong> (<em>bool</em>) – If True, modify the output power with <code class="xref py py-func docutils literal notranslate"><span class="pre">add_nonidealities()</span></code>.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="networks.spinMLP.out_features">
+<span class="sig-name descname"><span class="pre">out_features</span></span><a class="headerlink" href="#networks.spinMLP.out_features" title="Permalink to this definition"></a></dt>
+<dd><p>Number of output features</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="networks.spinMLP.nb_layers">
+<span class="sig-name descname"><span class="pre">nb_layers</span></span><a class="headerlink" href="#networks.spinMLP.nb_layers" title="Permalink to this definition"></a></dt>
+<dd><p>Number of layers of chains of resonators</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="networks.spinMLP.nb_hidden_layers">
+<span class="sig-name descname"><span class="pre">nb_hidden_layers</span></span><a class="headerlink" href="#networks.spinMLP.nb_hidden_layers" title="Permalink to this definition"></a></dt>
+<dd><p>Number of hidden layers of chains of resonators.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="networks.spinMLP.layers">
+<span class="sig-name descname"><span class="pre">layers</span></span><a class="headerlink" href="#networks.spinMLP.layers" title="Permalink to this definition"></a></dt>
+<dd><p>List of LayerChainsResonators instantiations</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="networks.spinMLP.nb_input_freq">
+<span class="sig-name descname"><span class="pre">nb_input_freq</span></span><a class="headerlink" href="#networks.spinMLP.nb_input_freq" title="Permalink to this definition"></a></dt>
+<dd><p>Number of input frequencies</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="networks.spinMLP.input_freq">
+<span class="sig-name descname"><span class="pre">input_freq</span></span><a class="headerlink" href="#networks.spinMLP.input_freq" title="Permalink to this definition"></a></dt>
+<dd><p>Input frequencies</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="networks.spinMLP.layers_voltage_biases">
+<span class="sig-name descname"><span class="pre">layers_voltage_biases</span></span><a class="headerlink" href="#networks.spinMLP.layers_voltage_biases" title="Permalink to this definition"></a></dt>
+<dd><p>Additional voltage bias (used for all chains).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="networks.spinMLP.voltage_to_current_factors">
+<span class="sig-name descname"><span class="pre">voltage_to_current_factors</span></span><a class="headerlink" href="#networks.spinMLP.voltage_to_current_factors" title="Permalink to this definition"></a></dt>
+<dd><p>Conversion factor (voltage_to_current_factors gm) (converting an input voltage into
+a current)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Tensor</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="networks.spinMLP.activations">
+<span class="sig-name descname"><span class="pre">activations</span></span><a class="headerlink" href="#networks.spinMLP.activations" title="Permalink to this definition"></a></dt>
+<dd><p>Activation functions associated to each layer. The last activation function (output layer)</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">correspond</span> <span class="pre">to</span> <span class="pre">the</span> <span class="pre">identity.</span></span></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="networks.spinMLP.V_to_mV">
+<span class="sig-name descname"><span class="pre">V_to_mV</span></span><a class="headerlink" href="#networks.spinMLP.V_to_mV" title="Permalink to this definition"></a></dt>
+<dd><p>scaling voltage from V to mV</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="networks.spinMLP.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_powers</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tensor</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/networks.html#spinMLP.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#networks.spinMLP.forward" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>input_powers</strong> (<em>Tensor</em>) – The powers corresponds to the input dataset values</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Scores or logits of the spintronic network corresponding to voltages.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="networks.spinMLP.reset_parameters">
+<span class="sig-name descname"><span class="pre">reset_parameters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">add_voltage_bias</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">voltage_to_current_factors</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/networks.html#spinMLP.reset_parameters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#networks.spinMLP.reset_parameters" title="Permalink to this definition"></a></dt>
+<dd><p>Reset the learning parameters of each layer and set the physical hyper-parameters</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="networks.spinMLP.training">
+<span class="sig-name descname"><span class="pre">training</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#networks.spinMLP.training" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="freq_distributions.html" class="btn btn-neutral float-left" title="freq_distributions module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="procedures.html" class="btn btn-neutral float-right" title="procedures module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Arnaud De Riz.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
