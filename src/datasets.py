@@ -12,7 +12,7 @@ from sklearn.datasets import load_digits
 from freq_distributions import freq_distribution
 
 
-def get_training_test_datasets(dataset_path=r'..\datasets', input_freq_min=0., input_freq_max=1.0,
+def get_training_test_datasets(dataset_path=r'../datasets', input_freq_min=0., input_freq_max=1.0,
                                name="drones_signals",
                                type_freq_distrib="linear"):
     if name == "MNIST":
@@ -47,7 +47,7 @@ class BasakDroneDataset(Dataset):
 
     classes = ["dx4e", "dx6i", "MTx", "Nineeg", "Parrot", "q205", "S500", "tello", "WiFi", "wltoys"]
 
-    def __init__(self, dataset_path=r'..\datasets', train=True, fmin=0.02, fmax=0.12,
+    def __init__(self, dataset_path=r'../datasets', train=True, fmin=0.02, fmax=0.12,
                  filename='RadioSpin_D62_RF_fingerprinting.h5'):
         self.nb_classes = len(self.classes)
         self.dataset_path = dataset_path
