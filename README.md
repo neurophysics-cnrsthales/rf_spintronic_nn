@@ -23,7 +23,26 @@ conda create --name environment_name --file requirements.yml
 conda activate environment_name
 ```
 
-## Usage
+## Reproduce the procedure used to obtain the results of Figure 4 of our paper.  
+
+![fig4b](./fig4b_accuracy_comparison.png)
+  
+Disclaimer: While it is possible for us to reproduce exactly the accuracy given in the paper, the results are not **exactly** reproducible if the code run on an other machine. This is actually a known issue (see [Pytorch forum](https://discuss.pytorch.org/t/reproducibility-over-different-machines/63047)). However, it is expected that you find very close results.  
+  
+In order to reproduce the training and evaluation procedure for the spintronic MLP and the standard MLP, we need two commands:  
+- Execute the code with the spintronic MLP model:  
+```  
+python main.py --procedure train_eval --config config_spinMLP.yaml
+```  
+  
+- Execute the code with the standard MLP model:  
+```  
+python main.py --procedure train_eval --config config_MLP.yaml  
+```  
+  
+The results will be saved in the directory results/train_eval under the names YYYYmmdd-HHMMSS-<model_name>.  
+
+## Wider usage
 The code can run three different procedures:  
 - Selection of the best hyper-parameters followed by training and evaluation of a network on the entire dataset  
 ```  
@@ -54,24 +73,6 @@ python main.py --procedure select_train_eval --with-nonidealities --freq-var-per
 where 1.0 corresponds to 100%.  
 The results are saved in the *results* directory where there is one directory for each procedure.  
   
-## Reproduce the procedure used to obtain the results of Figure 4 of our paper.  
-
-![fig4b](./fig4b_accuracy_comparison.png)
-  
-Disclaimer: While it is possible for us to reproduce exactly the accuracy given in the paper, the results are not **exactly** reproducible if the code run on an other machine. This is actually a known issue (see [Pytorch forum](https://discuss.pytorch.org/t/reproducibility-over-different-machines/63047)). However, it is expected that you find very close results.  
-  
-In order to reproduce the training and evaluation procedure for the spintronic MLP and the standard MLP, we need two commands:  
-- Execute the code with the spintronic MLP model:  
-```  
-python main.py --procedure train_eval --config config_spinMLP.yaml
-```  
-  
-- Execute the code with the standard MLP model:  
-```  
-python main.py --procedure train_eval --config config_MLP.yaml  
-```  
-  
-The results will be saved in the directory results/train_eval under the names YYYYmmdd-HHMMSS-<model_name>.  
   
 ## References  
 [1] Ross, A., Leroux, N., de Riz, A., Marković, D., Sanz-Hernández, D., Trastoy, J., ... & Grollier, J. (2022). "Multilayer spintronic neural networks with radio-frequency connections". arXiv preprint arXiv:2211.03659.
