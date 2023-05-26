@@ -19,7 +19,7 @@ The dependencies are:
 The *requirements.yml* file can be used to create the environment with the command:
 
 ```
-conda create --name environment_name --file requirements.yml
+conda env create --name environment_name --file requirements.yml
 conda activate environment_name
 ```
 
@@ -54,26 +54,23 @@ python main.py --procedure train_eval
 ```  
 - Evaluation of an existing model (need to load one) on the test dataset
 ```  
-python main.py --procedure eval  
-```  
-  
-The configuration file contain all the simulation parameters. The two different models can be selected by editing the field *model* either spintronic network (spinMLP) or a standard neural network (MLP).  
-  
-By default, the physical model do not consider the nonidealities of the magnetic tunnel junctions. To take into account the nonidealities you have to use the flag --with-nonidealities:  
+python main.py --procedure eval  --config <path_to_config_from_results>
+```   
+The results are saved in the *results* directory where there is one directory for each procedure. 
+
+By default, the physical model do not consider the nonidealities of the magnetic tunnel junctions. To take into account the nonidealities you have to use the argument --with-nonidealities:  
   
 ```  
 python main.py --procedure select_train_eval --with-nonidealities
 ```  
   
-The nonidealities that are implemented as the variation of the resonance frequencies, the variation of the frequency and the power of the output signal of the oscillators. It can be adjusted using  
+The nonidealities that are implemented as the variation of the resonance frequencies, the variation of the frequency and the power of the output signal of the oscillators. It can be adjusted using the arguments --freq-var-percentage and --power-var-percentage:
   
 ```  
 python main.py --procedure select_train_eval --with-nonidealities --freq-var-percentage 0.001 --power-var-percentage 0.001  
 ```  
 where 1.0 corresponds to 100%.  
-The results are saved in the *results* directory where there is one directory for each procedure.  
-  
-  
+ 
 ## References  
 [1] Ross, A., Leroux, N., de Riz, A., Marković, D., Sanz-Hernández, D., Trastoy, J., ... & Grollier, J. (2022). "Multilayer spintronic neural networks with radio-frequency connections". arXiv preprint arXiv:2211.03659.
 
